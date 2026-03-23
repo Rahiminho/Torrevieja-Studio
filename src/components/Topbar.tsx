@@ -42,7 +42,7 @@ export default function Topbar({ isMobile, chatOpen, onToggleChat }: TopbarProps
         position: 'sticky',
         top: 0,
         zIndex: 90,
-        borderBottom: '0.5px solid rgba(200,140,40,0.12)',
+        borderBottom: '0.5px solid rgba(255,140,0,0.12)',
         borderTop: 'none',
         borderLeft: 'none',
         borderRight: 'none',
@@ -84,19 +84,19 @@ export default function Topbar({ isMobile, chatOpen, onToggleChat }: TopbarProps
               cursor: 'pointer',
               color: chatOpen ? 'var(--color-gold)' : 'var(--color-txt3)',
               background: chatOpen
-                ? 'rgba(200,134,10,0.10)'
-                : 'rgba(200,134,10,0.04)',
+                ? 'rgba(255,122,0,0.10)'
+                : 'rgba(255,122,0,0.04)',
               transition: 'all 0.2s ease',
             }}
             onMouseEnter={(e) => {
               if (!chatOpen) {
-                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(200,134,10,0.08)';
+                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,122,0,0.08)';
                 (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-gold)';
               }
             }}
             onMouseLeave={(e) => {
               if (!chatOpen) {
-                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(200,134,10,0.04)';
+                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,122,0,0.04)';
                 (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-txt3)';
               }
             }}

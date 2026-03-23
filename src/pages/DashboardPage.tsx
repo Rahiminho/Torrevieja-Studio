@@ -82,7 +82,7 @@ export default function DashboardPage() {
   const recentActivity = [...activity].reverse().slice(0, 10);
 
   const stats = [
-    { label: 'Morceaux', value: notMixedCount, Icon: MusicIcon, color: 'rgba(200,134,10,0.10)' },
+    { label: 'Morceaux', value: notMixedCount, Icon: MusicIcon, color: 'rgba(255,122,0,0.10)' },
     { label: 'Mixés', value: mixedCount, Icon: CheckIcon, color: 'rgba(34,197,94,0.10)' },
     { label: 'Crew', value: users.length, Icon: UsersIcon, color: 'rgba(59,130,246,0.10)' },
     { label: 'Fichiers', value: files.length, Icon: FolderIcon, color: 'rgba(139,92,246,0.10)' },
@@ -164,7 +164,7 @@ export default function DashboardPage() {
                     width: '100%',
                     height: 6,
                     borderRadius: 999,
-                    background: 'rgba(200,134,10,0.08)',
+                    background: 'rgba(255,122,0,0.08)',
                     overflow: 'hidden',
                   }}
                 >

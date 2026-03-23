@@ -87,7 +87,7 @@ export default function Sidebar() {
         display: 'flex',
         flexDirection: 'column',
         zIndex: 100,
-        borderRight: '0.5px solid rgba(200,140,40,0.18)',
+        borderRight: '0.5px solid rgba(255,140,0,0.18)',
         borderTop: 'none',
         borderBottom: 'none',
         borderLeft: 'none',
@@ -121,7 +121,7 @@ export default function Sidebar() {
       </div>
 
       {/* Separator */}
-      <div style={{ height: 0.5, background: 'rgba(200,140,40,0.10)', margin: '0 16px' }} />
+      <div style={{ height: 0.5, background: 'rgba(255,140,0,0.10)', margin: '0 16px' }} />
 
       {/* Navigation */}
       <nav style={{ flex: 1, padding: '12px 12px', display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -152,7 +152,7 @@ export default function Sidebar() {
                     ? 'var(--color-gold2)'
                     : 'var(--color-txt2)',
                 background: isActive
-                  ? 'rgba(200,134,10,0.10)'
+                  ? 'rgba(255,122,0,0.10)'
                   : 'transparent',
                 transition: 'all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                 position: 'relative',
@@ -161,7 +161,7 @@ export default function Sidebar() {
               }}
               onMouseEnter={(e) => {
                 if (!isActive) {
-                  (e.currentTarget as HTMLButtonElement).style.background = 'rgba(200,134,10,0.06)';
+                  (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,122,0,0.06)';
                 }
               }}
               onMouseLeave={(e) => {
@@ -197,7 +197,7 @@ export default function Sidebar() {
                 style={{
                   fontSize: '0.6rem',
                   color: 'var(--color-txt4)',
-                  background: 'rgba(200,134,10,0.06)',
+                  background: 'rgba(255,122,0,0.06)',
                   padding: '2px 5px',
                   borderRadius: 4,
                   transition: 'opacity 0.2s',
@@ -216,7 +216,7 @@ export default function Sidebar() {
         <div
           style={{
             padding: '14px 16px 18px',
-            borderTop: '0.5px solid rgba(200,140,40,0.10)',
+            borderTop: '0.5px solid rgba(255,140,0,0.10)',
             display: 'flex',
             alignItems: 'center',
             gap: 10,
@@ -272,7 +272,7 @@ export default function Sidebar() {
             onClick={() => dispatch({ type: 'LOGOUT' })}
             title="Déconnexion"
             style={{
-              background: 'rgba(200,134,10,0.04)',
+              background: 'rgba(255,122,0,0.04)',
               border: 'none',
               cursor: 'pointer',
               color: 'var(--color-txt4)',
@@ -287,11 +287,11 @@ export default function Sidebar() {
             }}
             onMouseEnter={(e) => {
               (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-gold)';
-              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(200,134,10,0.10)';
+              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,122,0,0.10)';
             }}
             onMouseLeave={(e) => {
               (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-txt4)';
-              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(200,134,10,0.04)';
+              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,122,0,0.04)';
             }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

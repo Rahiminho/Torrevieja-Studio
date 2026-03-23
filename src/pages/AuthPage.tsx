@@ -92,7 +92,7 @@ export default function AuthPage() {
       className="min-h-screen flex items-center justify-center px-4 py-8"
       style={{
         background:
-          'radial-gradient(ellipse 100% 80% at 50% 20%, rgba(232,160,32,0.20) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 80% 80%, rgba(200,134,10,0.10) 0%, transparent 60%), var(--color-cream)',
+          'radial-gradient(ellipse 130% 75% at 50% 10%, rgba(255,130,0,0.40) 0%, transparent 55%), radial-gradient(ellipse 70% 55% at 90% 80%, rgba(255,80,30,0.18) 0%, transparent 55%), radial-gradient(ellipse 60% 50% at 10% 80%, rgba(255,180,0,0.15) 0%, transparent 55%), var(--color-cream)',
       }}
     >
       <div className="w-full max-w-[400px] animate-fade-in">
@@ -134,7 +134,7 @@ export default function AuthPage() {
               marginBottom: 24,
               borderRadius: 10,
               overflow: 'hidden',
-              background: 'rgba(200,134,10,0.06)',
+              background: 'rgba(255,122,0,0.06)',
               padding: 3,
               gap: 2,
             }}
@@ -152,7 +152,7 @@ export default function AuthPage() {
                 cursor: 'pointer',
                 borderRadius: 8,
                 transition: 'all 0.2s ease',
-                background: tab === 'login' ? 'rgba(253,246,232,0.85)' : 'transparent',
+                background: tab === 'login' ? 'rgba(255,255,255,0.90)' : 'transparent',
                 color: tab === 'login' ? 'var(--color-gold)' : 'var(--color-txt3)',
                 boxShadow: tab === 'login' ? '0 1px 4px rgba(0,0,0,0.06)' : 'none',
               }}
@@ -172,7 +172,7 @@ export default function AuthPage() {
                 cursor: 'pointer',
                 borderRadius: 8,
                 transition: 'all 0.2s ease',
-                background: tab === 'register' ? 'rgba(253,246,232,0.85)' : 'transparent',
+                background: tab === 'register' ? 'rgba(255,255,255,0.90)' : 'transparent',
                 color: tab === 'register' ? 'var(--color-gold)' : 'var(--color-txt3)',
                 boxShadow: tab === 'register' ? '0 1px 4px rgba(0,0,0,0.06)' : 'none',
               }}
@@ -334,9 +334,9 @@ export default function AuthPage() {
 
           {/* Divider */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '20px 0' }}>
-            <div style={{ flex: 1, height: 0.5, background: 'rgba(200,134,10,0.12)' }} />
+            <div style={{ flex: 1, height: 0.5, background: 'rgba(255,122,0,0.12)' }} />
             <span style={{ color: 'var(--color-txt4)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>ou</span>
-            <div style={{ flex: 1, height: 0.5, background: 'rgba(200,134,10,0.12)' }} />
+            <div style={{ flex: 1, height: 0.5, background: 'rgba(255,122,0,0.12)' }} />
           </div>
 
           {/* Demo access */}

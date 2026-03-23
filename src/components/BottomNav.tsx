@@ -84,7 +84,7 @@ export default function BottomNav() {
         borderLeft: 'none',
         borderRight: 'none',
         borderBottom: 'none',
-        borderTop: '0.5px solid rgba(200,140,40,0.15)',
+        borderTop: '0.5px solid rgba(255,140,0,0.15)',
       }}
     >
       {tabs.map((tab) => {
@@ -109,7 +109,7 @@ export default function BottomNav() {
                 height: 50,
                 borderRadius: '50%',
                 marginTop: -12,
-                boxShadow: '0 2px 12px rgba(200,134,10,0.30), 0 0.5px 0 rgba(255,220,130,0.4) inset',
+                boxShadow: '0 2px 16px rgba(255,122,0,0.38), 0 0.5px 0 rgba(255,210,100,0.5) inset',
                 transition: 'transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                 position: 'relative',
               }}

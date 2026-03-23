@@ -28,7 +28,7 @@ export default function Modal({ isOpen, onClose, title, children, width = 'max-w
         onClick={e => e.stopPropagation()}
         style={{
           boxShadow:
-            '0 0.5px 0 0 rgba(255, 248, 220, 0.8) inset, 0 24px 80px rgba(28, 20, 8, 0.12), 0 8px 32px rgba(28, 20, 8, 0.06)',
+            '0 0.5px 0 0 rgba(255, 255, 255, 0.90) inset, 0 24px 80px rgba(28, 20, 8, 0.12), 0 8px 32px rgba(28, 20, 8, 0.06)',
         }}
       >
         <div className="flex items-center justify-between mb-5">
@@ -47,7 +47,7 @@ export default function Modal({ isOpen, onClose, title, children, width = 'max-w
           <button
             onClick={onClose}
             style={{
-              background: 'rgba(200,134,10,0.06)',
+              background: 'rgba(255,122,0,0.06)',
               border: 'none',
               cursor: 'pointer',
               color: 'var(--color-txt3)',
@@ -62,11 +62,11 @@ export default function Modal({ isOpen, onClose, title, children, width = 'max-w
               transition: 'all 0.2s ease',
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(200,134,10,0.12)';
+              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,122,0,0.12)';
               (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-txt)';
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(200,134,10,0.06)';
+              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,122,0,0.06)';
               (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-txt3)';
             }}
           >

@@ -89,7 +89,7 @@ export default function Layout({ children }: LayoutProps) {
             zIndex: 95,
             display: 'flex',
             flexDirection: 'column',
-            borderLeft: '0.5px solid rgba(200,140,40,0.18)',
+            borderLeft: '0.5px solid rgba(255,140,0,0.18)',
             borderRadius: 0,
             borderTop: 'none',
             borderBottom: 'none',
@@ -105,7 +105,7 @@ export default function Layout({ children }: LayoutProps) {
               alignItems: 'center',
               justifyContent: 'space-between',
               padding: '0 20px',
-              borderBottom: '0.5px solid rgba(200,140,40,0.12)',
+              borderBottom: '0.5px solid rgba(255,140,0,0.12)',
               flexShrink: 0,
             }}
           >
@@ -123,7 +123,7 @@ export default function Layout({ children }: LayoutProps) {
             <button
               onClick={handleToggleChat}
               style={{
-                background: 'rgba(200,134,10,0.06)',
+                background: 'rgba(255,122,0,0.06)',
                 border: 'none',
                 cursor: 'pointer',
                 color: 'var(--color-txt3)',
@@ -137,11 +137,11 @@ export default function Layout({ children }: LayoutProps) {
                 transition: 'all 0.2s ease',
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(200,134,10,0.12)';
+                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,122,0,0.12)';
                 (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-gold)';
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(200,134,10,0.06)';
+                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,122,0,0.06)';
                 (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-txt3)';
               }}
             >
