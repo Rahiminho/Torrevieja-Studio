@@ -110,10 +110,6 @@ export default function AuthPage() {
   return (
     <div
       className="min-h-screen flex items-center justify-center px-4 py-8"
-      style={{
-        background:
-          'radial-gradient(ellipse 90% 55% at 50% -5%, rgba(232,160,32,0.18) 0%, transparent 65%), radial-gradient(ellipse 60% 45% at 5% 80%, rgba(224,90,24,0.10) 0%, transparent 60%), radial-gradient(ellipse 55% 50% at 95% 85%, rgba(200,134,10,0.10) 0%, transparent 60%), #FDF6E8',
-      }}
     >
       <div className="w-full max-w-[420px] animate-fade-in">
         {/* Logo & Title */}

@@ -137,8 +137,8 @@ export default function LyricsPage() {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="glass-card p-8 text-center">
-          <p className="text-white/60 text-lg">Aucun morceau dans le projet.</p>
-          <p className="text-white/40 text-sm mt-2">Ajoutez des morceaux pour commencer à écrire.</p>
+          <p className="text-txt3 text-lg">Aucun morceau dans le projet.</p>
+          <p className="text-txt4 text-sm mt-2">Ajoutez des morceaux pour commencer à écrire.</p>
         </div>
       </div>
     );
@@ -150,7 +150,7 @@ export default function LyricsPage() {
 
       {/* Desktop sidebar */}
       <aside className="hidden md:flex flex-col w-[250px] shrink-0 glass-card p-3 overflow-y-auto">
-        <h2 className="text-sm font-semibold text-white/50 uppercase tracking-wider mb-3 px-1">
+        <h2 className="text-sm font-semibold text-txt3 uppercase tracking-wider mb-3 px-1">
           Morceaux
         </h2>
         <div className="flex flex-col gap-1">
@@ -160,16 +160,16 @@ export default function LyricsPage() {
               onClick={() => setSelectedTrackId(track.id)}
               className={`text-left px-3 py-2 rounded-lg transition-colors ${
                 track.id === selectedTrackId
-                  ? 'bg-white/10 border-l-2 border-[var(--gold)]'
-                  : 'hover:bg-white/5 border-l-2 border-transparent'
+                  ? 'bg-surface3 border-l-2 border-gold'
+                  : 'hover:bg-surface2 border-l-2 border-transparent'
               }`}
             >
-              <p className="text-sm font-medium text-white truncate">{track.title}</p>
+              <p className="text-sm font-medium text-txt truncate">{track.title}</p>
               <div className="flex items-center gap-2 mt-1">
                 <span className={`${STATUS_PILL[track.status]} text-[10px] px-1.5 py-0.5 rounded-full`}>
                   {track.status}
                 </span>
-                <span className="text-[11px] text-white/40 truncate">
+                <span className="text-[11px] text-txt4 truncate">
                   {getArtistNames(track)}
                 </span>
               </div>
@@ -199,11 +199,11 @@ export default function LyricsPage() {
           <>
             {/* Header */}
             <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-              <h1 className="text-lg font-bold text-white">{selectedTrack.title}</h1>
+              <h1 className="text-lg font-bold text-txt">{selectedTrack.title}</h1>
               <div className="flex items-center gap-2">
                 {/* Saved indicator */}
                 <span
-                  className={`text-xs text-green-400 transition-opacity duration-500 ${
+                  className={`text-xs text-green-600 transition-opacity duration-500 ${
                     saved ? 'opacity-100' : 'opacity-0'
                   }`}
                 >
@@ -213,7 +213,7 @@ export default function LyricsPage() {
                 {/* Copy button */}
                 <button
                   onClick={handleCopy}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg bg-surface2 hover:bg-surface3 text-txt3 hover:text-txt transition-colors"
                   title="Copier les paroles"
                 >
                   <ClipboardIcon />
@@ -223,7 +223,7 @@ export default function LyricsPage() {
                 {/* Save button */}
                 <button
                   onClick={handleManualSave}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg bg-[var(--gold)]/20 hover:bg-[var(--gold)]/30 text-[var(--gold)] transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg bg-gold/20 hover:bg-gold/30 text-gold transition-colors"
                   title="Sauvegarder"
                 >
                   <SaveIcon />
@@ -243,7 +243,7 @@ export default function LyricsPage() {
           </>
         ) : (
           <div className="flex items-center justify-center flex-1">
-            <p className="text-white/40">Sélectionne un morceau pour éditer les paroles.</p>
+            <p className="text-txt4">Sélectionne un morceau pour éditer les paroles.</p>
           </div>
         )}
       </main>

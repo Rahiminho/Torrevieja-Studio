@@ -73,32 +73,11 @@ export default function Topbar({ isMobile, chatOpen, onToggleChat }: TopbarProps
           <button
             onClick={onToggleChat}
             title="Chat"
+            className="icon-btn"
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
               width: 34,
               height: 34,
-              borderRadius: '50%',
-              border: 'none',
-              cursor: 'pointer',
-              color: chatOpen ? 'var(--color-gold)' : 'var(--color-txt3)',
-              background: chatOpen
-                ? 'rgba(255,122,0,0.10)'
-                : 'rgba(255,122,0,0.04)',
-              transition: 'all 0.2s ease',
-            }}
-            onMouseEnter={(e) => {
-              if (!chatOpen) {
-                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,122,0,0.08)';
-                (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-gold)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!chatOpen) {
-                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,122,0,0.04)';
-                (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-txt3)';
-              }
+              ...(chatOpen ? { color: 'var(--color-gold)', background: 'rgba(200,134,10,0.10)' } : {}),
             }}
           >
             {IconChat}

@@ -272,18 +272,18 @@ export default function FilesPage() {
     dispatch({ type: 'DELETE_FILE', payload: { id: fileId, userId: currentUser.id } });
   };
 
-    // ---- Open file ----
-    const handleOpenFile = (file: FileItem) => {
-          if (file.dataUrl) {
-                  const link = document.createElement('a');
-                  link.href = file.dataUrl;
-                  link.download = file.name;
-                  link.target = '_blank';
-                  document.body.appendChild(link);
-                  link.click();
-                  document.body.removeChild(link);
-                }
-        };
+  // ---- Open file ----
+  const handleOpenFile = (file: FileItem) => {
+    if (file.dataUrl) {
+      const link = document.createElement('a');
+      link.href = file.dataUrl;
+      link.download = file.name;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -308,13 +308,13 @@ export default function FilesPage() {
         onClick={() => fileInputRef.current?.click()}
         className={`relative border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center gap-3 cursor-pointer transition-colors ${
           dragging
-            ? 'border-accent bg-accent/10'
-            : 'border-accent/40 hover:border-accent hover:bg-accent/5'
+            ? 'border-gold bg-gold/10'
+            : 'border-gold/40 hover:border-gold hover:bg-gold/5'
         }`}
       >
         <UploadIcon />
         <p className="text-txt2 text-sm text-center">
-          Glissez-déposez vos fichiers ici ou <span className="text-accent font-medium">cliquez pour parcourir</span>
+          Glissez-déposez vos fichiers ici ou <span className="text-gold font-medium">cliquez pour parcourir</span>
         </p>
         <p className="text-txt3 text-xs">
           WAV, MP3, FLAC, AIFF, OGG, TXT, PDF, ZIP, PNG, JPG, DOCX
@@ -331,7 +331,7 @@ export default function FilesPage() {
         {uploading && (
           <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-surface2 rounded-b-xl overflow-hidden">
             <div
-              className="h-full bg-accent transition-all duration-200 ease-out rounded-b-xl"
+              className="h-full bg-gold transition-all duration-200 ease-out rounded-b-xl"
               style={{ width: `${uploadProgress}%` }}
             />
           </div>
@@ -346,7 +346,7 @@ export default function FilesPage() {
               const currentFolder = folders.find((f) => f.id === currentFolderId);
               setCurrentFolderId(currentFolder?.parentId ?? null);
             }}
-            className="text-accent hover:underline flex items-center gap-1 mr-2"
+            className="text-gold hover:underline flex items-center gap-1 mr-2"
           >
             &larr; Retour
           </button>
@@ -357,7 +357,7 @@ export default function FilesPage() {
             {idx < breadcrumbPath.length - 1 ? (
               <button
                 onClick={() => setCurrentFolderId(crumb.id)}
-                className="text-accent hover:underline"
+                className="text-gold hover:underline"
               >
                 {crumb.name}
               </button>
@@ -376,7 +376,7 @@ export default function FilesPage() {
             onClick={() => setActiveFilter(tab.key)}
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
               activeFilter === tab.key
-                ? 'bg-accent text-black'
+                ? 'bg-gold text-white'
                 : 'bg-surface2 text-txt2 hover:bg-surface3'
             }`}
           >
@@ -394,9 +394,9 @@ export default function FilesPage() {
               <button
                 key={folder.id}
                 onClick={() => setCurrentFolderId(folder.id)}
-                className="glass-card flex items-center gap-3 p-4 text-left hover:ring-1 hover:ring-accent/40 transition-all"
+                className="glass-card flex items-center gap-3 p-4 text-left hover:ring-1 hover:ring-gold/40 transition-all"
               >
-                <span className="text-accent">
+                <span className="text-gold">
                   <FolderIcon />
                 </span>
                 <div className="min-w-0">
@@ -419,24 +419,24 @@ export default function FilesPage() {
             {filteredFiles.map((file) => (
               <div key={file.id} className="glass-card p-4 flex flex-col gap-2 group">
                 <div className="flex items-start justify-between">
-                  <span className="text-accent">{fileIcon(file.category)}</span>
+                  <span className="text-gold">{fileIcon(file.category)}</span>
                   <button
                     onClick={() => handleDeleteFile(file.id)}
                     className="text-txt3 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity p-1"
-                    title="Supprimer">
-                <TrashIcon />
-              </button>
-                  
-                                          <button
-                                                                    onClick={() => handleOpenFile(file)}
-                                                                    className="text-txt3 hover:text-accent opacity-0 group-hover:opacity-100 transition-opacity p-1"
-                                                                    title="Ouvrir"
-                                                                  >
-                                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                                                              </svg>
-                                                                  </button>
+                    title="Supprimer"
+                  >
+                    <TrashIcon />
+                  </button>
+                  <button
+                    onClick={() => handleOpenFile(file)}
+                    className="text-txt3 hover:text-gold opacity-0 group-hover:opacity-100 transition-opacity p-1"
+                    title="Ouvrir"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  </button>
                 </div>
                 <p className="text-txt text-sm font-medium truncate" title={file.name}>
                   {file.name}
@@ -468,7 +468,7 @@ export default function FilesPage() {
             value={newFolderName}
             onChange={(e) => setNewFolderName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleCreateFolder()}
-            className="w-full px-3 py-2 rounded-lg bg-surface2 border border-surface3 text-txt placeholder:text-txt3 focus:outline-none focus:ring-2 focus:ring-accent/50"
+            className="w-full px-3 py-2 rounded-lg bg-surface2 border border-[rgba(200,134,10,0.12)] text-txt placeholder:text-txt3 focus:outline-none focus:ring-2 focus:ring-gold/50"
             autoFocus
           />
           <div className="flex justify-end gap-2">
@@ -481,7 +481,7 @@ export default function FilesPage() {
             <button
               onClick={handleCreateFolder}
               disabled={!newFolderName.trim()}
-              className="btn-primary text-sm disabled:opacity-40"
+              className="btn-gold text-sm disabled:opacity-40"
             >
               Créer
             </button>

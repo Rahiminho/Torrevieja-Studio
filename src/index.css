@@ -11,6 +11,13 @@
   --color-txt2:   #5C4010;   /* dark brown                */
   --color-txt3:   #8C6830;   /* warm mid-brown            */
   --color-txt4:   #B09060;   /* soft warm tan             */
+
+  /* Surface tokens for Group-B pages (Tailwind utility-friendly) */
+  --color-surface:  rgba(253,246,232,0.72);
+  --color-surface2: rgba(200,134,10,0.06);
+  --color-surface3: rgba(200,134,10,0.12);
+  --color-accent:   #C8860A;
+
   --font-display: 'Playfair Display', serif;
   --font-body:    'DM Sans', sans-serif;
   --font-mono:    'JetBrains Mono', monospace;
@@ -27,9 +34,9 @@
     font-family: var(--font-body);
     color: var(--color-txt);
     background:
-      radial-gradient(ellipse 90% 55% at 50% -5%, rgba(232,160,32,0.18) 0%, transparent 65%),
-      radial-gradient(ellipse 60% 45% at 5% 80%, rgba(224,90,24,0.10) 0%, transparent 60%),
-      radial-gradient(ellipse 55% 50% at 95% 85%, rgba(200,134,10,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 90% 55% at 50% -5%, rgba(232,160,32,0.25) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 45% at 5% 80%, rgba(224,90,24,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 50% at 95% 85%, rgba(200,134,10,0.15) 0%, transparent 60%),
       #FDF6E8;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
@@ -79,7 +86,7 @@
   }
 
   .glass-card {
-    background: rgba(253,246,232,0.72);
+    background: rgba(255,255,255,0.82);
     backdrop-filter: blur(32px) saturate(1.8) brightness(1.04);
     -webkit-backdrop-filter: blur(32px) saturate(1.8) brightness(1.04);
     border: 1px solid rgba(255,215,115,0.35);
@@ -104,6 +111,21 @@
     transform: translateY(-1px);
   }
 
+  /* Glass card without hover lift – for containers */
+  .glass-card-flat {
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(32px) saturate(1.8) brightness(1.04);
+    -webkit-backdrop-filter: blur(32px) saturate(1.8) brightness(1.04);
+    border: 1px solid rgba(255,215,115,0.35);
+    box-shadow:
+      0 2px 8px rgba(180,100,10,0.06),
+      0 8px 32px rgba(180,100,10,0.09),
+      inset 0 1px 0 rgba(255,248,210,0.70),
+      inset 0 -1px 0 rgba(200,140,40,0.06);
+    border-radius: 1rem;
+    padding: 1.25rem;
+  }
+
   .glass-thin {
     background: rgba(253,246,232,0.32);
     backdrop-filter: blur(16px) saturate(1.4);
@@ -126,6 +148,7 @@
     transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     font-family: var(--font-body);
     font-size: 0.875rem;
+    line-height: 1;
     box-shadow:
       0 1px 2px rgba(0,0,0,0.08),
       0 4px 14px rgba(200,134,10,0.32),
@@ -179,6 +202,60 @@
   }
 
   /* ============================================================
+     Icon buttons – circular, for toolbars/actions
+     ============================================================ */
+
+  .icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(200,134,10,0.06);
+    color: var(--color-txt3);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .icon-btn:hover {
+    background: rgba(200,134,10,0.12);
+    color: var(--color-gold);
+  }
+
+  /* ============================================================
+     Nav buttons – sidebar navigation items
+     ============================================================ */
+
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 0.625rem;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--color-txt2);
+    background: transparent;
+    transition: all 0.2s ease;
+    width: 100%;
+    text-align: left;
+    position: relative;
+  }
+  .nav-btn:hover {
+    background: rgba(200,134,10,0.06);
+  }
+  .nav-btn.active {
+    background: rgba(200,134,10,0.10);
+    color: var(--color-gold);
+    font-weight: 600;
+  }
+
+  /* ============================================================
      Pills / Badges
      ============================================================ */
 
@@ -227,7 +304,7 @@
     padding: 0.625rem 0.875rem;
     border: 1px solid rgba(200,134,10,0.22);
     border-radius: 0.625rem;
-    background: rgba(253,246,232,0.72);
+    background: rgba(255,255,255,0.80);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     font-family: var(--font-body);

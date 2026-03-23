@@ -3,9 +3,9 @@ interface SunLogoProps {
   className?: string;
 }
 
-const GOLD = '#FF7A00';
-const GOLD2 = '#FF9F1C';
-const GOLD3 = '#FFCF63';
+const GOLD = '#C8860A';
+const GOLD2 = '#E8A020';
+const GOLD3 = '#F5C040';
 
 const RAY_COUNT = 18;
 const CENTER = 50;

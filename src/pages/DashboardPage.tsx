@@ -156,13 +156,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stat cards */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: 12,
-        }}
-        className="lg:grid-cols-4"
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3"
       >
         {stats.map((s, i) => (
           <div
@@ -256,13 +250,7 @@ export default function DashboardPage() {
       )}
 
       {/* 3-col layout */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr',
-          gap: 16,
-        }}
-        className="lg:grid-cols-3"
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4"
       >
         {/* Progress bars per track */}
         <div

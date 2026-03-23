@@ -46,29 +46,8 @@ export default function Modal({ isOpen, onClose, title, children, width = 'max-w
           </h2>
           <button
             onClick={onClose}
-            style={{
-              background: 'rgba(255,122,0,0.06)',
-              border: 'none',
-              cursor: 'pointer',
-              color: 'var(--color-txt3)',
-              width: 28,
-              height: 28,
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '1.1rem',
-              lineHeight: 1,
-              transition: 'all 0.2s ease',
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,122,0,0.12)';
-              (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-txt)';
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,122,0,0.06)';
-              (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-txt3)';
-            }}
+            className="icon-btn"
+            style={{ width: 28, height: 28, fontSize: '1.1rem', lineHeight: 1 }}
           >
             ×
           </button>

@@ -133,42 +133,8 @@ export default function Sidebar() {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className="group"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-                padding: '9px 12px',
-                borderRadius: '0.625rem',
-                border: 'none',
-                cursor: 'pointer',
-                fontFamily: 'var(--font-body)',
-                fontSize: '0.85rem',
-                fontWeight: isActive ? 600 : 500,
-                letterSpacing: '-0.01em',
-                color: isActive
-                  ? 'var(--color-gold)'
-                  : isFinale
-                    ? 'var(--color-gold2)'
-                    : 'var(--color-txt2)',
-                background: isActive
-                  ? 'rgba(255,122,0,0.10)'
-                  : 'transparent',
-                transition: 'all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-                position: 'relative',
-                width: '100%',
-                textAlign: 'left',
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive) {
-                  (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,122,0,0.06)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) {
-                  (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
-                }
-              }}
+              className={`nav-btn group${isActive ? ' active' : ''}`}
+              style={isFinale && !isActive ? { color: 'var(--color-gold2)' } : undefined}
             >
               {/* Active indicator - iOS style pill */}
               {isActive && (
@@ -271,28 +237,8 @@ export default function Sidebar() {
           <button
             onClick={() => dispatch({ type: 'LOGOUT' })}
             title="Déconnexion"
-            style={{
-              background: 'rgba(255,122,0,0.04)',
-              border: 'none',
-              cursor: 'pointer',
-              color: 'var(--color-txt4)',
-              padding: 6,
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 28,
-              height: 28,
-              transition: 'all 0.2s ease',
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-gold)';
-              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,122,0,0.10)';
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-txt4)';
-              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,122,0,0.04)';
-            }}
+            className="icon-btn"
+            style={{ width: 28, height: 28 }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />

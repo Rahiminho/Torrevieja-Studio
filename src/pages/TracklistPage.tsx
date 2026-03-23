@@ -218,7 +218,7 @@ export default function TracklistPage() {
       <div className="glass-card hidden md:block overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead>
-            <tr className="border-b border-white/10 text-txt2">
+            <tr className="border-b border-[rgba(200,134,10,0.12)] text-txt2">
               <th className="py-3 px-2 w-10"></th>
               <th className="py-3 px-2 w-10">#</th>
               <th className="py-3 px-2">Titre / Artistes</th>
@@ -241,7 +241,7 @@ export default function TracklistPage() {
                     onDragOver={(e) => handleDragOver(e, track.id)}
                     onDrop={handleDrop}
                     onDragEnd={handleDragEnd}
-                    className="border-b border-white/5 hover:bg-white/5 transition-colors cursor-grab active:cursor-grabbing [&.dragging]:opacity-40"
+                    className="border-b border-[rgba(200,134,10,0.08)] hover:bg-surface2 transition-colors cursor-grab active:cursor-grabbing [&.dragging]:opacity-40"
                     style={{ opacity: dragItemRef.current === track.id ? 0.4 : 1 }}
                   >
                     <td className="py-3 px-2 text-txt3 select-none">☰</td>
@@ -264,21 +264,21 @@ export default function TracklistPage() {
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => openEditModal(track)}
-                          className="p-1.5 rounded hover:bg-white/10 text-txt3 hover:text-txt transition-colors"
+                          className="p-1.5 rounded hover:bg-surface3 text-txt3 hover:text-txt transition-colors"
                           title="Modifier"
                         >
                           ✏️
                         </button>
                         <button
                           onClick={() => handleDelete(track)}
-                          className="p-1.5 rounded hover:bg-red-500/20 text-txt3 hover:text-red-400 transition-colors"
+                          className="p-1.5 rounded hover:bg-red-100 text-txt3 hover:text-red-600 transition-colors"
                           title="Supprimer"
                         >
                           🗑️
                         </button>
                         <button
                           onClick={() => setRecordingTrackId(track.id)}
-                          className="p-1.5 rounded hover:bg-white/10 text-txt3 hover:text-txt transition-colors"
+                          className="p-1.5 rounded hover:bg-surface3 text-txt3 hover:text-txt transition-colors"
                           title="Enregistrer un vocal"
                         >
                           🎙️
@@ -288,7 +288,7 @@ export default function TracklistPage() {
                             onClick={() =>
                               setExpandedTrackId(isExpanded ? null : track.id)
                             }
-                            className="p-1.5 rounded hover:bg-white/10 text-txt3 hover:text-txt transition-colors text-xs"
+                            className="p-1.5 rounded hover:bg-surface3 text-txt3 hover:text-txt transition-colors text-xs"
                             title="Voir les vocals"
                           >
                             {isExpanded ? '▲' : '▼'} {trackVocals.length}
@@ -301,7 +301,7 @@ export default function TracklistPage() {
                   {/* Expanded vocals section */}
                   {isExpanded && trackVocals.length > 0 && (
                     <tr>
-                      <td colSpan={7} className="px-4 py-3 bg-white/[0.02]">
+                      <td colSpan={7} className="px-4 py-3 bg-surface2">
                         <div className="space-y-2">
                           <div className="text-xs font-semibold text-txt2 mb-2">
                             Vocals ({trackVocals.length})
@@ -311,9 +311,9 @@ export default function TracklistPage() {
                             return (
                               <div
                                 key={vocal.id}
-                                className="flex items-center gap-3 flex-wrap bg-white/5 rounded-lg p-2"
+                                className="flex items-center gap-3 flex-wrap bg-surface2 rounded-lg p-2"
                               >
-                                <span className="text-xs px-2 py-0.5 rounded-full bg-accent/20 text-accent font-medium">
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-[rgba(200,134,10,0.15)] text-gold font-medium">
                                   {vocal.type}
                                 </span>
                                 <span className="text-xs text-txt2">
@@ -333,7 +333,7 @@ export default function TracklistPage() {
                                 {currentUser && currentUser.id === vocal.authorId && (
                                   <button
                                     onClick={() => handleDeleteVocal(vocal.id)}
-                                    className="p-1 rounded hover:bg-red-500/20 text-txt3 hover:text-red-400 transition-colors text-xs"
+                                    className="p-1 rounded hover:bg-red-100 text-txt3 hover:text-red-600 transition-colors text-xs"
                                     title="Supprimer ce vocal"
                                   >
                                     🗑️
@@ -406,19 +406,19 @@ export default function TracklistPage() {
                   <div className="flex items-center gap-1 mt-2">
                     <button
                       onClick={() => openEditModal(track)}
-                      className="p-1.5 rounded hover:bg-white/10 text-txt3 hover:text-txt transition-colors text-sm"
+                      className="p-1.5 rounded hover:bg-surface3 text-txt3 hover:text-txt transition-colors text-sm"
                     >
                       ✏️
                     </button>
                     <button
                       onClick={() => handleDelete(track)}
-                      className="p-1.5 rounded hover:bg-red-500/20 text-txt3 hover:text-red-400 transition-colors text-sm"
+                      className="p-1.5 rounded hover:bg-red-100 text-txt3 hover:text-red-600 transition-colors text-sm"
                     >
                       🗑️
                     </button>
                     <button
                       onClick={() => setRecordingTrackId(track.id)}
-                      className="p-1.5 rounded hover:bg-white/10 text-txt3 hover:text-txt transition-colors text-sm"
+                      className="p-1.5 rounded hover:bg-surface3 text-txt3 hover:text-txt transition-colors text-sm"
                     >
                       🎙️
                     </button>
@@ -427,7 +427,7 @@ export default function TracklistPage() {
                         onClick={() =>
                           setExpandedTrackId(isExpanded ? null : track.id)
                         }
-                        className="p-1.5 rounded hover:bg-white/10 text-txt3 hover:text-txt transition-colors text-xs"
+                        className="p-1.5 rounded hover:bg-surface3 text-txt3 hover:text-txt transition-colors text-xs"
                       >
                         {isExpanded ? '▲' : '▼'} {trackVocals.length} vocal
                         {trackVocals.length > 1 ? 's' : ''}
@@ -437,7 +437,7 @@ export default function TracklistPage() {
 
                   {/* Expanded vocals */}
                   {isExpanded && trackVocals.length > 0 && (
-                    <div className="mt-3 space-y-2 border-t border-white/10 pt-3">
+                    <div className="mt-3 space-y-2 border-t border-[rgba(200,134,10,0.12)] pt-3">
                       <div className="text-xs font-semibold text-txt2">
                         Vocals ({trackVocals.length})
                       </div>
@@ -446,10 +446,10 @@ export default function TracklistPage() {
                         return (
                           <div
                             key={vocal.id}
-                            className="bg-white/5 rounded-lg p-2 space-y-1"
+                            className="bg-surface2 rounded-lg p-2 space-y-1"
                           >
                             <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-xs px-2 py-0.5 rounded-full bg-accent/20 text-accent font-medium">
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-[rgba(200,134,10,0.15)] text-gold font-medium">
                                 {vocal.type}
                               </span>
                               <span className="text-xs text-txt2">
@@ -461,7 +461,7 @@ export default function TracklistPage() {
                               {currentUser && currentUser.id === vocal.authorId && (
                                 <button
                                   onClick={() => handleDeleteVocal(vocal.id)}
-                                  className="p-1 rounded hover:bg-red-500/20 text-txt3 hover:text-red-400 transition-colors text-xs ml-auto"
+                                  className="p-1 rounded hover:bg-red-100 text-txt3 hover:text-red-600 transition-colors text-xs ml-auto"
                                 >
                                   🗑️
                                 </button>
@@ -492,7 +492,7 @@ export default function TracklistPage() {
 
       {/* Recording state indicator */}
       {recordingTrackId && (
-        <div className="glass-card border border-accent/30">
+        <div className="glass-card border border-gold/30">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="text-sm text-txt">
               🎙️ Enregistrement vocal pour :{' '}
@@ -546,8 +546,8 @@ export default function TracklistPage() {
                     onClick={() => toggleArtist(user.id)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-colors ${
                       selected
-                        ? 'bg-accent text-black font-medium'
-                        : 'bg-white/10 text-txt2 hover:bg-white/20'
+                        ? 'bg-gold text-white font-medium'
+                        : 'bg-surface3 text-txt2 hover:bg-[rgba(200,134,10,0.15)]'
                     }`}
                   >
                     <span
@@ -634,7 +634,7 @@ export default function TracklistPage() {
               onChange={(e) =>
                 setForm((f) => ({ ...f, progressPct: Number(e.target.value) }))
               }
-              className="w-full accent-[var(--color-accent)]"
+              className="w-full accent-gold"
             />
           </div>
 
