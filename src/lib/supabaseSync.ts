@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { supabase, supabaseMissing } from './supabase';
 import type {
   User,
   Track,
@@ -139,6 +139,26 @@ function rowToSettings(r: Record<string, unknown>): ProjectSettings {
 // ---------------------------------------------------------------------------
 
 export async function fetchAllData() {
+  if (supabaseMissing) {
+    return {
+      users: [],
+      tracks: [],
+      lyrics: [],
+      vocals: [],
+      files: [],
+      folders: [],
+      votes: [],
+      messages: [],
+      activity: [],
+      projectSettings: {
+        mixtapeName: 'Torrevieja Tape Vol. 1',
+        subtitle: 'Depuis le studio',
+        targetDate: '2026-06-01',
+        coverUrl: '',
+      },
+    };
+  }
+
   const [users, tracks, lyrics, vocals, files, folders, votes, messages, activity, settings] =
     await Promise.all([
       supabase.from('users').select('*'),
@@ -398,6 +418,10 @@ export const db = {
 export type RealtimeCallback = (table: string, eventType: 'INSERT' | 'UPDATE' | 'DELETE', row: Record<string, unknown>) => void;
 
 export function subscribeToChanges(callback: RealtimeCallback) {
+  if (supabaseMissing) {
+    return () => {};
+  }
+
   const channel = supabase
     .channel('studio-realtime')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'tracks' }, (payload) =>
