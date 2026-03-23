@@ -1,18 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Sol de Janeiro Summer Palette ── */
-  --color-gold:   #FF7A00;   /* vibrant orange – main accent   */
-  --color-gold2:  #FF9F1C;   /* warm amber-orange – secondary  */
-  --color-gold3:  #FFCF63;   /* golden yellow – tertiary       */
-  --color-amber:  #E85D04;   /* deep coral-orange              */
-  --color-coral:  #FF5733;   /* coral pop                      */
-  --color-cream:  #FFF8F2;   /* warm white base                */
-  --color-sand:   #FFECD2;   /* sandy beige                    */
-  --color-txt:    #1C0800;   /* very dark warm                 */
-  --color-txt2:   #4A1C02;   /* dark brown                     */
-  --color-txt3:   #8B4F1A;   /* warm mid-brown                 */
-  --color-txt4:   #C47A3A;   /* soft warm tan                  */
+  /* ── Torrevieja Studio Gold Palette ── */
+  --color-gold:   #C8860A;   /* main gold accent          */
+  --color-gold2:  #E8A020;   /* warm amber-gold secondary */
+  --color-gold3:  #F5C040;   /* golden yellow tertiary    */
+  --color-amber:  #D4700A;   /* deep amber                */
+  --color-cream:  #FDF6E8;   /* warm cream base           */
+  --color-txt:    #1C1408;   /* very dark warm            */
+  --color-txt2:   #5C4010;   /* dark brown                */
+  --color-txt3:   #8C6830;   /* warm mid-brown            */
+  --color-txt4:   #B09060;   /* soft warm tan             */
   --font-display: 'Playfair Display', serif;
   --font-body:    'DM Sans', sans-serif;
   --font-mono:    'JetBrains Mono', monospace;
@@ -28,26 +26,23 @@
     margin: 0;
     font-family: var(--font-body);
     color: var(--color-txt);
-    /* Summer sol de Janeiro gradient – warm orange/coral at top, golden sides, cream base */
     background:
-      radial-gradient(ellipse 140% 70% at 50% -15%, rgba(255,130,0,0.38) 0%, transparent 52%),
-      radial-gradient(ellipse 90% 60% at -10% 60%,  rgba(255,80,30,0.18) 0%, transparent 55%),
-      radial-gradient(ellipse 80% 55% at 110% 70%,  rgba(255,180,0,0.20) 0%, transparent 55%),
-      radial-gradient(ellipse 55% 45% at 70% 40%,   rgba(255,210,60,0.10) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 35% at 20% 90%,   rgba(255,100,30,0.08) 0%, transparent 55%),
-      var(--color-cream);
+      radial-gradient(ellipse 90% 55% at 50% -5%, rgba(232,160,32,0.18) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 45% at 5% 80%, rgba(224,90,24,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 50% at 95% 85%, rgba(200,134,10,0.10) 0%, transparent 60%),
+      #FDF6E8;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Subtle noise texture for depth */
+  /* Grain/noise overlay */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    opacity: 0.018;
+    opacity: 0.028;
     pointer-events: none;
     z-index: 9999;
   }
@@ -57,41 +52,42 @@
 
 @layer components {
   /* ============================================================
-     iOS Glassmorphism – Summer White Glass
-     Bright frosted panels against the warm gradient background
+     Glassmorphism – warm gold-cream glass
      ============================================================ */
 
+  /* Glass principal */
   .glass {
-    background: rgba(255, 255, 255, 0.72);
-    backdrop-filter: blur(40px) saturate(1.9) brightness(1.06);
-    -webkit-backdrop-filter: blur(40px) saturate(1.9) brightness(1.06);
-    border: 0.5px solid rgba(255, 160, 60, 0.30);
+    background: rgba(253,246,232,0.62);
+    backdrop-filter: blur(28px) saturate(1.7) brightness(1.04);
+    -webkit-backdrop-filter: blur(28px) saturate(1.7) brightness(1.04);
+    border: 1px solid rgba(255,220,130,0.38);
     box-shadow:
-      0 0.5px 0 0 rgba(255, 255, 255, 0.90) inset,
-      0 -0.5px 0 0 rgba(255, 120, 0, 0.06) inset,
-      0 4px 24px rgba(200, 70, 0, 0.07),
-      0 12px 48px rgba(200, 70, 0, 0.05);
+      0 2px 8px rgba(180,100,10,0.07),
+      0 8px 32px rgba(180,100,10,0.10),
+      inset 0 1px 0 rgba(255,245,200,0.65),
+      inset 0 -1px 0 rgba(200,140,40,0.08);
   }
 
   .glass-medium {
-    background: rgba(255, 255, 255, 0.52);
-    backdrop-filter: blur(32px) saturate(1.7) brightness(1.04);
-    -webkit-backdrop-filter: blur(32px) saturate(1.7) brightness(1.04);
-    border: 0.5px solid rgba(255, 155, 50, 0.22);
+    background: rgba(253,246,232,0.48);
+    backdrop-filter: blur(20px) saturate(1.5) brightness(1.03);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5) brightness(1.03);
+    border: 0.5px solid rgba(255,210,100,0.28);
     box-shadow:
-      0 0.5px 0 0 rgba(255, 255, 255, 0.75) inset;
+      0 1px 4px rgba(180,100,10,0.05),
+      inset 0 1px 0 rgba(255,245,200,0.50);
   }
 
   .glass-card {
-    background: rgba(255, 255, 255, 0.78);
-    backdrop-filter: blur(40px) saturate(1.9) brightness(1.05);
-    -webkit-backdrop-filter: blur(40px) saturate(1.9) brightness(1.05);
-    border: 0.5px solid rgba(255, 155, 50, 0.28);
+    background: rgba(253,246,232,0.72);
+    backdrop-filter: blur(32px) saturate(1.8) brightness(1.04);
+    -webkit-backdrop-filter: blur(32px) saturate(1.8) brightness(1.04);
+    border: 1px solid rgba(255,215,115,0.35);
     box-shadow:
-      0 0.5px 0 0 rgba(255, 255, 255, 0.90) inset,
-      0 -0.5px 0 0 rgba(255, 120, 0, 0.04) inset,
-      0 2px 8px rgba(200, 70, 0, 0.04),
-      0 8px 32px rgba(200, 70, 0, 0.07);
+      0 2px 8px rgba(180,100,10,0.06),
+      0 8px 32px rgba(180,100,10,0.09),
+      inset 0 1px 0 rgba(255,248,210,0.70),
+      inset 0 -1px 0 rgba(200,140,40,0.06);
     border-radius: 1rem;
     padding: 1.25rem;
     transition:
@@ -101,22 +97,22 @@
 
   .glass-card:hover {
     box-shadow:
-      0 0.5px 0 0 rgba(255, 255, 255, 0.90) inset,
-      0 -0.5px 0 0 rgba(255, 120, 0, 0.04) inset,
-      0 4px 16px rgba(200, 70, 0, 0.07),
-      0 16px 56px rgba(200, 70, 0, 0.10);
+      0 4px 16px rgba(180,100,10,0.09),
+      0 16px 48px rgba(180,100,10,0.12),
+      inset 0 1px 0 rgba(255,248,210,0.80),
+      inset 0 -1px 0 rgba(200,140,40,0.08);
     transform: translateY(-1px);
   }
 
   .glass-thin {
-    background: rgba(255, 255, 255, 0.32);
-    backdrop-filter: blur(24px) saturate(1.5);
-    -webkit-backdrop-filter: blur(24px) saturate(1.5);
-    border: 0.5px solid rgba(255, 155, 50, 0.18);
+    background: rgba(253,246,232,0.32);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    border: 0.5px solid rgba(255,210,100,0.20);
   }
 
   /* ============================================================
-     iOS-style Buttons – vibrant summer orange
+     Buttons – gold style
      ============================================================ */
 
   .btn-gold {
@@ -132,8 +128,8 @@
     font-size: 0.875rem;
     box-shadow:
       0 1px 2px rgba(0,0,0,0.08),
-      0 4px 14px rgba(255,122,0,0.32),
-      0 0.5px 0 rgba(255,210,100,0.40) inset;
+      0 4px 14px rgba(200,134,10,0.32),
+      inset 0 0.5px 0 rgba(255,220,120,0.40);
     letter-spacing: -0.01em;
   }
   .btn-gold:hover {
@@ -141,22 +137,27 @@
     transform: translateY(-1px);
     box-shadow:
       0 2px 4px rgba(0,0,0,0.10),
-      0 10px 28px rgba(255,122,0,0.38),
-      0 0.5px 0 rgba(255,220,120,0.50) inset;
+      0 10px 28px rgba(200,134,10,0.38),
+      inset 0 0.5px 0 rgba(255,230,140,0.50);
   }
   .btn-gold:active {
     transform: translateY(0) scale(0.98);
     box-shadow:
       0 1px 2px rgba(0,0,0,0.06),
-      0 2px 8px rgba(255,122,0,0.20);
+      0 2px 8px rgba(200,134,10,0.20);
+  }
+  .btn-gold:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
   }
 
   .btn-outline {
-    background: rgba(255, 255, 255, 0.55);
+    background: rgba(253,246,232,0.55);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     color: var(--color-gold);
-    border: 1px solid rgba(255, 122, 0, 0.28);
+    border: 1px solid rgba(200,134,10,0.30);
     border-radius: 0.75rem;
     padding: 0.5rem 1rem;
     font-weight: 500;
@@ -166,15 +167,19 @@
     font-size: 0.875rem;
   }
   .btn-outline:hover {
-    background: rgba(255, 122, 0, 0.08);
-    border-color: rgba(255, 122, 0, 0.45);
+    background: rgba(200,134,10,0.08);
+    border-color: rgba(200,134,10,0.50);
   }
   .btn-outline:active {
     transform: scale(0.98);
   }
+  .btn-outline:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 
   /* ============================================================
-     iOS-style Pills / Badges – summer palette
+     Pills / Badges
      ============================================================ */
 
   .pill {
@@ -188,11 +193,11 @@
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
   }
-  /* Idée – sunny yellow-orange */
+  /* Idée – gold */
   .pill-gold {
-    background: linear-gradient(135deg, rgba(255,159,28,0.15), rgba(255,122,0,0.12));
+    background: linear-gradient(135deg, rgba(232,160,32,0.18), rgba(200,134,10,0.14));
     color: var(--color-gold);
-    border: 0.5px solid rgba(255,122,0,0.22);
+    border: 0.5px solid rgba(200,134,10,0.25);
   }
   /* En cours – sky blue */
   .pill-blue {
@@ -200,13 +205,13 @@
     color: #0284c7;
     border: 0.5px solid rgba(14,165,233,0.18);
   }
-  /* À mixer – coral-violet */
+  /* À mixer – rose */
   .pill-violet {
     background: rgba(244,114,182,0.12);
     color: #db2777;
     border: 0.5px solid rgba(244,114,182,0.18);
   }
-  /* Mixé – tropical green */
+  /* Mixé – green */
   .pill-green {
     background: rgba(34,197,94,0.10);
     color: #16a34a;
@@ -214,15 +219,15 @@
   }
 
   /* ============================================================
-     iOS-style Inputs
+     Inputs
      ============================================================ */
 
   .input-field {
     width: 100%;
     padding: 0.625rem 0.875rem;
-    border: 0.5px solid rgba(255,122,0,0.20);
+    border: 1px solid rgba(200,134,10,0.22);
     border-radius: 0.625rem;
-    background: rgba(255, 255, 255, 0.65);
+    background: rgba(253,246,232,0.72);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     font-family: var(--font-body);
@@ -230,21 +235,21 @@
     color: var(--color-txt);
     transition: all 0.2s ease;
     outline: none;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.02) inset;
+    box-shadow: inset 0 1px 2px rgba(180,100,10,0.04);
   }
   .input-field:focus {
     border-color: var(--color-gold);
     box-shadow:
-      0 0 0 3px rgba(255,122,0,0.10),
-      0 1px 2px rgba(0,0,0,0.02) inset;
-    background: rgba(255, 255, 255, 0.88);
+      0 0 0 3px rgba(200,134,10,0.12),
+      inset 0 1px 2px rgba(180,100,10,0.04);
+    background: rgba(255,252,240,0.92);
   }
   .input-field::placeholder {
     color: var(--color-txt4);
   }
 
   /* ============================================================
-     Animations (iOS spring curves)
+     Animations
      ============================================================ */
 
   @keyframes spin-slow {
@@ -276,23 +281,28 @@
     0%   { background-position: -200% center; }
     100% { background-position: 200% center; }
   }
+  @keyframes skeleton-pulse {
+    0%, 100% { opacity: 0.5; }
+    50%       { opacity: 1; }
+  }
 
   .animate-fade-in   { animation: fade-in 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
   .animate-scale-in  { animation: ios-bounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
   .animate-slide-up  { animation: slide-up 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+  .animate-skeleton  { animation: skeleton-pulse 1.5s ease-in-out infinite; }
 }
 
 /* ============================================================
-   iOS-style Scrollbar
+   Scrollbar
    ============================================================ */
 
 ::-webkit-scrollbar        { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track  { background: transparent; }
 ::-webkit-scrollbar-thumb  {
-  background: rgba(255,122,0,0.18);
+  background: rgba(200,134,10,0.22);
   border-radius: 999px;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,122,0,0.32); }
+::-webkit-scrollbar-thumb:hover { background: rgba(200,134,10,0.38); }
 
 @media (max-width: 768px) {
   ::-webkit-scrollbar { display: none; }

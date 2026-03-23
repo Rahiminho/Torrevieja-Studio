@@ -21,10 +21,6 @@ const KEYS = {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-function now(): string {
-  return new Date().toISOString();
-}
-
 function daysAgo(n: number): string {
   return new Date(Date.now() - n * 86400000).toISOString();
 }

@@ -23,6 +23,7 @@ export default function AuthPage() {
   const [regEmail, setRegEmail] = useState('');
   const [regPassword, setRegPassword] = useState('');
   const [regRole, setRegRole] = useState<Role>('Rappeur');
+  const [regBio, setRegBio] = useState('');
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -69,17 +70,36 @@ export default function AuthPage() {
         email: regEmail,
         password: regPassword,
         role: regRole,
+        bio: regBio || undefined,
       },
     });
   }
 
   async function handleDemo() {
-    const demoUser = state.users[0];
-    if (demoUser) {
-      setLoading(true);
-      await loginAsync(demoUser.email, demoUser.password);
-      setLoading(false);
+    setLoading(true);
+    // Try the known demo credentials first
+    let user = await loginAsync('demo@torrevieja.studio', 'demo123');
+    if (!user) {
+      // Fallback: use the first user in state
+      const first = state.users[0];
+      if (first) {
+        user = await loginAsync(first.email, first.password);
+      }
     }
+    if (!user) {
+      // Last resort: create a demo user inline and login
+      dispatch({
+        type: 'REGISTER',
+        payload: {
+          prenom: 'Demo',
+          pseudo: 'DemoUser',
+          email: 'demo@torrevieja.studio',
+          password: 'demo123',
+          role: 'Rappeur',
+        },
+      });
+    }
+    setLoading(false);
   }
 
   function switchTab(newTab: AuthTab) {
@@ -92,22 +112,23 @@ export default function AuthPage() {
       className="min-h-screen flex items-center justify-center px-4 py-8"
       style={{
         background:
-          'radial-gradient(ellipse 130% 75% at 50% 10%, rgba(255,130,0,0.40) 0%, transparent 55%), radial-gradient(ellipse 70% 55% at 90% 80%, rgba(255,80,30,0.18) 0%, transparent 55%), radial-gradient(ellipse 60% 50% at 10% 80%, rgba(255,180,0,0.15) 0%, transparent 55%), var(--color-cream)',
+          'radial-gradient(ellipse 90% 55% at 50% -5%, rgba(232,160,32,0.18) 0%, transparent 65%), radial-gradient(ellipse 60% 45% at 5% 80%, rgba(224,90,24,0.10) 0%, transparent 60%), radial-gradient(ellipse 55% 50% at 95% 85%, rgba(200,134,10,0.10) 0%, transparent 60%), #FDF6E8',
       }}
     >
-      <div className="w-full max-w-[400px] animate-fade-in">
+      <div className="w-full max-w-[420px] animate-fade-in">
         {/* Logo & Title */}
-        <div className="flex flex-col items-center mb-8">
-          <SunLogo size={100} />
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 32 }}>
+          <SunLogo size={120} />
           <h1
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '1.75rem',
+              fontSize: '2rem',
               fontWeight: 700,
               color: 'var(--color-gold)',
               marginTop: 16,
               textAlign: 'center',
               letterSpacing: '-0.02em',
+              lineHeight: 1.1,
             }}
           >
             Torrevieja Studio
@@ -116,9 +137,9 @@ export default function AuthPage() {
             style={{
               color: 'var(--color-txt3)',
               fontStyle: 'italic',
-              marginTop: 4,
+              marginTop: 6,
               textAlign: 'center',
-              fontSize: '0.9rem',
+              fontSize: '0.95rem',
             }}
           >
             La mixtape de l&apos;été
@@ -126,59 +147,42 @@ export default function AuthPage() {
         </div>
 
         {/* Auth Card */}
-        <div className="glass-card" style={{ padding: '1.5rem' }}>
-          {/* Tabs - iOS segmented control style */}
+        <div className="glass-card" style={{ padding: '1.75rem' }}>
+          {/* iOS segmented tabs */}
           <div
             style={{
               display: 'flex',
               marginBottom: 24,
-              borderRadius: 10,
+              borderRadius: 12,
               overflow: 'hidden',
-              background: 'rgba(255,122,0,0.06)',
+              background: 'rgba(200,134,10,0.07)',
               padding: 3,
               gap: 2,
             }}
           >
-            <button
-              type="button"
-              onClick={() => switchTab('login')}
-              style={{
-                flex: 1,
-                padding: '8px 0',
-                fontSize: '0.85rem',
-                fontWeight: 600,
-                fontFamily: 'var(--font-body)',
-                border: 'none',
-                cursor: 'pointer',
-                borderRadius: 8,
-                transition: 'all 0.2s ease',
-                background: tab === 'login' ? 'rgba(255,255,255,0.90)' : 'transparent',
-                color: tab === 'login' ? 'var(--color-gold)' : 'var(--color-txt3)',
-                boxShadow: tab === 'login' ? '0 1px 4px rgba(0,0,0,0.06)' : 'none',
-              }}
-            >
-              Connexion
-            </button>
-            <button
-              type="button"
-              onClick={() => switchTab('register')}
-              style={{
-                flex: 1,
-                padding: '8px 0',
-                fontSize: '0.85rem',
-                fontWeight: 600,
-                fontFamily: 'var(--font-body)',
-                border: 'none',
-                cursor: 'pointer',
-                borderRadius: 8,
-                transition: 'all 0.2s ease',
-                background: tab === 'register' ? 'rgba(255,255,255,0.90)' : 'transparent',
-                color: tab === 'register' ? 'var(--color-gold)' : 'var(--color-txt3)',
-                boxShadow: tab === 'register' ? '0 1px 4px rgba(0,0,0,0.06)' : 'none',
-              }}
-            >
-              Créer un compte
-            </button>
+            {(['login', 'register'] as AuthTab[]).map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => switchTab(t)}
+                style={{
+                  flex: 1,
+                  padding: '9px 0',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  fontFamily: 'var(--font-body)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  borderRadius: 9,
+                  transition: 'all 0.2s ease',
+                  background: tab === t ? 'rgba(253,246,232,0.95)' : 'transparent',
+                  color: tab === t ? 'var(--color-gold)' : 'var(--color-txt3)',
+                  boxShadow: tab === t ? '0 1px 4px rgba(180,100,10,0.10)' : 'none',
+                }}
+              >
+                {t === 'login' ? 'Connexion' : 'Créer un compte'}
+              </button>
+            ))}
           </div>
 
           {/* Error message */}
@@ -189,9 +193,10 @@ export default function AuthPage() {
                 padding: '10px 14px',
                 borderRadius: 10,
                 background: 'rgba(239,68,68,0.08)',
-                border: '0.5px solid rgba(239,68,68,0.2)',
+                border: '1px solid rgba(239,68,68,0.22)',
                 color: '#dc2626',
                 fontSize: '0.85rem',
+                backdropFilter: 'blur(8px)',
               }}
             >
               {error}
@@ -200,18 +205,18 @@ export default function AuthPage() {
 
           {/* Login Form */}
           {tab === 'login' && (
-            <form onSubmit={handleLogin} className="space-y-4">
+            <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div>
                 <label
                   htmlFor="login-email"
-                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 4, fontWeight: 500 }}
+                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 5, fontWeight: 500 }}
                 >
                   Email
                 </label>
                 <input
                   id="login-email"
                   type="email"
-                  className="input-field w-full"
+                  className="input-field"
                   placeholder="email@exemple.com"
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
@@ -220,14 +225,14 @@ export default function AuthPage() {
               <div>
                 <label
                   htmlFor="login-password"
-                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 4, fontWeight: 500 }}
+                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 5, fontWeight: 500 }}
                 >
                   Mot de passe
                 </label>
                 <input
                   id="login-password"
                   type="password"
-                  className="input-field w-full"
+                  className="input-field"
                   placeholder="••••••"
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
@@ -241,18 +246,18 @@ export default function AuthPage() {
 
           {/* Register Form */}
           {tab === 'register' && (
-            <form onSubmit={handleRegister} className="space-y-4">
+            <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>
                 <label
                   htmlFor="reg-prenom"
-                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 4, fontWeight: 500 }}
+                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 5, fontWeight: 500 }}
                 >
                   Prénom
                 </label>
                 <input
                   id="reg-prenom"
                   type="text"
-                  className="input-field w-full"
+                  className="input-field"
                   placeholder="Prénom"
                   value={regPrenom}
                   onChange={(e) => setRegPrenom(e.target.value)}
@@ -261,14 +266,14 @@ export default function AuthPage() {
               <div>
                 <label
                   htmlFor="reg-pseudo"
-                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 4, fontWeight: 500 }}
+                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 5, fontWeight: 500 }}
                 >
                   Pseudo / Nom d&apos;artiste
                 </label>
                 <input
                   id="reg-pseudo"
                   type="text"
-                  className="input-field w-full"
+                  className="input-field"
                   placeholder="Nom d'artiste"
                   value={regPseudo}
                   onChange={(e) => setRegPseudo(e.target.value)}
@@ -277,14 +282,14 @@ export default function AuthPage() {
               <div>
                 <label
                   htmlFor="reg-email"
-                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 4, fontWeight: 500 }}
+                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 5, fontWeight: 500 }}
                 >
                   Email
                 </label>
                 <input
                   id="reg-email"
                   type="email"
-                  className="input-field w-full"
+                  className="input-field"
                   placeholder="email@exemple.com"
                   value={regEmail}
                   onChange={(e) => setRegEmail(e.target.value)}
@@ -293,14 +298,14 @@ export default function AuthPage() {
               <div>
                 <label
                   htmlFor="reg-password"
-                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 4, fontWeight: 500 }}
+                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 5, fontWeight: 500 }}
                 >
                   Mot de passe
                 </label>
                 <input
                   id="reg-password"
                   type="password"
-                  className="input-field w-full"
+                  className="input-field"
                   placeholder="Min. 6 caractères"
                   value={regPassword}
                   onChange={(e) => setRegPassword(e.target.value)}
@@ -309,13 +314,13 @@ export default function AuthPage() {
               <div>
                 <label
                   htmlFor="reg-role"
-                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 4, fontWeight: 500 }}
+                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 5, fontWeight: 500 }}
                 >
                   Rôle
                 </label>
                 <select
                   id="reg-role"
-                  className="input-field w-full"
+                  className="input-field"
                   value={regRole}
                   onChange={(e) => setRegRole(e.target.value as Role)}
                 >
@@ -326,6 +331,23 @@ export default function AuthPage() {
                   ))}
                 </select>
               </div>
+              <div>
+                <label
+                  htmlFor="reg-bio"
+                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 5, fontWeight: 500 }}
+                >
+                  Bio (optionnel)
+                </label>
+                <textarea
+                  id="reg-bio"
+                  className="input-field"
+                  placeholder="Quelques mots sur toi..."
+                  rows={2}
+                  value={regBio}
+                  onChange={(e) => setRegBio(e.target.value)}
+                  style={{ resize: 'none' }}
+                />
+              </div>
               <button type="submit" className="btn-gold w-full">
                 Créer un compte
               </button>
@@ -334,12 +356,12 @@ export default function AuthPage() {
 
           {/* Divider */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '20px 0' }}>
-            <div style={{ flex: 1, height: 0.5, background: 'rgba(255,122,0,0.12)' }} />
-            <span style={{ color: 'var(--color-txt4)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>ou</span>
-            <div style={{ flex: 1, height: 0.5, background: 'rgba(255,122,0,0.12)' }} />
+            <div style={{ flex: 1, height: 1, background: 'rgba(200,134,10,0.14)' }} />
+            <span style={{ color: 'var(--color-txt4)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>ou</span>
+            <div style={{ flex: 1, height: 1, background: 'rgba(200,134,10,0.14)' }} />
           </div>
 
-          {/* Demo access */}
+          {/* Demo access – always works */}
           <button
             type="button"
             onClick={handleDemo}
@@ -348,6 +370,17 @@ export default function AuthPage() {
           >
             {loading ? 'Chargement...' : 'Accès démo'}
           </button>
+
+          <p
+            style={{
+              textAlign: 'center',
+              marginTop: 10,
+              fontSize: '0.72rem',
+              color: 'var(--color-txt4)',
+            }}
+          >
+            demo@torrevieja.studio · demo123
+          </p>
         </div>
       </div>
     </div>

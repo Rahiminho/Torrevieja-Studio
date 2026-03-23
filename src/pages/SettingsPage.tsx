@@ -9,18 +9,67 @@ import type { Role } from '../types';
 const ROLES: Role[] = ['Rappeur', 'Beatmaker', 'Chanteur', 'Mixeur', 'DA', 'Multi'];
 
 // ---------------------------------------------------------------------------
-// Saved indicator component
+// Saved indicator
 // ---------------------------------------------------------------------------
 
 function SavedIndicator({ show }: { show: boolean }) {
   return (
     <span
-      className={`ml-3 text-green-400 text-sm transition-opacity duration-500 ${
-        show ? 'opacity-100' : 'opacity-0'
-      }`}
+      style={{
+        marginLeft: 12,
+        fontSize: '0.82rem',
+        color: '#16a34a',
+        fontWeight: 600,
+        transition: 'opacity 0.4s ease',
+        opacity: show ? 1 : 0,
+      }}
     >
       ✓ Sauvegardé
     </span>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Section header
+// ---------------------------------------------------------------------------
+
+function SectionHeader({ title }: { title: string }) {
+  return (
+    <h2
+      style={{
+        fontSize: '1rem',
+        fontWeight: 700,
+        color: 'var(--color-txt)',
+        letterSpacing: '-0.01em',
+        marginBottom: 20,
+        paddingBottom: 10,
+        borderBottom: '1px solid rgba(200,134,10,0.14)',
+        fontFamily: 'var(--font-display)',
+      }}
+    >
+      {title}
+    </h2>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Label helper
+// ---------------------------------------------------------------------------
+
+function FieldLabel({ htmlFor, children }: { htmlFor?: string; children: React.ReactNode }) {
+  return (
+    <label
+      htmlFor={htmlFor}
+      style={{
+        display: 'block',
+        fontSize: '0.8rem',
+        color: 'var(--color-txt2)',
+        marginBottom: 5,
+        fontWeight: 500,
+      }}
+    >
+      {children}
+    </label>
   );
 }
 
@@ -54,7 +103,7 @@ export default function SettingsPage() {
   const [passwordError, setPasswordError] = useState('');
   const [passwordSuccess, setPasswordSuccess] = useState('');
 
-  // Sync from store when currentUser changes
+  // Sync from store
   useEffect(() => {
     if (user) {
       setPrenom(user.prenom);
@@ -121,10 +170,7 @@ export default function SettingsPage() {
       return;
     }
 
-    dispatch({
-      type: 'UPDATE_USER',
-      payload: { id: user.id, password: newPassword },
-    });
+    dispatch({ type: 'UPDATE_USER', payload: { id: user.id, password: newPassword } });
     setOldPassword('');
     setNewPassword('');
     setConfirmPassword('');
@@ -141,216 +187,334 @@ export default function SettingsPage() {
     dispatch({ type: 'LOGOUT' });
   };
 
-  // ---- Render ----
+  const sectionStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 16,
+  };
+
+  const fieldStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 0,
+  };
 
   return (
-    <div className="space-y-8 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-white">Paramètres</h1>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 24,
+        maxWidth: 560,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+      }}
+    >
+      <div>
+        <h1
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: '1.6rem',
+            fontWeight: 700,
+            color: 'var(--color-txt)',
+            letterSpacing: '-0.02em',
+          }}
+        >
+          Paramètres
+        </h1>
+      </div>
 
       {/* ---------------------------------------------------------------- */}
       {/* Section 1 – Mon Profil                                           */}
       {/* ---------------------------------------------------------------- */}
-      <section className="glass-card p-6 space-y-5">
-        <h2 className="text-lg font-semibold text-white">Mon Profil</h2>
+      <section className="glass-card" style={{ padding: '22px 24px' }}>
+        <SectionHeader title="Mon Profil" />
+        <div style={sectionStyle}>
 
-        {/* Photo upload */}
-        <div className="flex items-center gap-4">
-          <button
-            type="button"
-            onClick={() => photoInputRef.current?.click()}
-            className="w-20 h-20 rounded-full overflow-hidden border-2 border-white/20 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
-          >
-            {photoUrl ? (
-              <img src={photoUrl} alt="Avatar" className="w-full h-full object-cover" />
-            ) : (
-              <div
-                className="w-full h-full flex items-center justify-center text-xl font-bold text-white"
-                style={{ backgroundColor: user.color }}
-              >
-                {user.initials}
-              </div>
-            )}
-          </button>
-          <input
-            ref={photoInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handlePhotoChange}
-          />
-          <span className="text-sm text-white/50">Cliquez pour changer la photo</span>
-        </div>
+          {/* Photo upload */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <button
+              type="button"
+              onClick={() => photoInputRef.current?.click()}
+              style={{
+                width: 72,
+                height: 72,
+                borderRadius: '50%',
+                overflow: 'hidden',
+                border: '2px solid rgba(200,134,10,0.30)',
+                flexShrink: 0,
+                cursor: 'pointer',
+                background: 'none',
+                padding: 0,
+                transition: 'opacity 0.2s',
+              }}
+            >
+              {photoUrl ? (
+                <img src={photoUrl} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                <div
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '1.2rem',
+                    fontWeight: 700,
+                    color: '#fff',
+                    backgroundColor: user.color,
+                  }}
+                >
+                  {user.initials}
+                </div>
+              )}
+            </button>
+            <input
+              ref={photoInputRef}
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              onChange={handlePhotoChange}
+            />
+            <div>
+              <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-txt)' }}>{user.pseudo}</p>
+              <p style={{ fontSize: '0.78rem', color: 'var(--color-txt3)', marginTop: 2 }}>
+                Cliquez pour changer la photo
+              </p>
+            </div>
+          </div>
 
-        {/* Prénom */}
-        <div>
-          <label className="block text-sm text-white/70 mb-1">Prénom</label>
-          <input
-            type="text"
-            className="input-field w-full"
-            value={prenom}
-            onChange={(e) => setPrenom(e.target.value)}
-          />
-        </div>
+          {/* Prénom */}
+          <div style={fieldStyle}>
+            <FieldLabel htmlFor="s-prenom">Prénom</FieldLabel>
+            <input
+              id="s-prenom"
+              type="text"
+              className="input-field"
+              value={prenom}
+              onChange={(e) => setPrenom(e.target.value)}
+            />
+          </div>
 
-        {/* Pseudo */}
-        <div>
-          <label className="block text-sm text-white/70 mb-1">Pseudo</label>
-          <input
-            type="text"
-            className="input-field w-full"
-            value={pseudo}
-            onChange={(e) => setPseudo(e.target.value)}
-          />
-        </div>
+          {/* Pseudo */}
+          <div style={fieldStyle}>
+            <FieldLabel htmlFor="s-pseudo">Pseudo / Nom d&apos;artiste</FieldLabel>
+            <input
+              id="s-pseudo"
+              type="text"
+              className="input-field"
+              value={pseudo}
+              onChange={(e) => setPseudo(e.target.value)}
+            />
+          </div>
 
-        {/* Role */}
-        <div>
-          <label className="block text-sm text-white/70 mb-1">Rôle</label>
-          <select
-            className="input-field w-full"
-            value={role}
-            onChange={(e) => setRole(e.target.value as Role)}
-          >
-            {ROLES.map((r) => (
-              <option key={r} value={r}>
-                {r}
-              </option>
-            ))}
-          </select>
-        </div>
+          {/* Rôle */}
+          <div style={fieldStyle}>
+            <FieldLabel htmlFor="s-role">Rôle</FieldLabel>
+            <select
+              id="s-role"
+              className="input-field"
+              value={role}
+              onChange={(e) => setRole(e.target.value as Role)}
+            >
+              {ROLES.map((r) => (
+                <option key={r} value={r}>{r}</option>
+              ))}
+            </select>
+          </div>
 
-        {/* Bio */}
-        <div>
-          <label className="block text-sm text-white/70 mb-1">Bio</label>
-          <textarea
-            className="input-field w-full"
-            rows={3}
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-          />
-        </div>
+          {/* Bio */}
+          <div style={fieldStyle}>
+            <FieldLabel htmlFor="s-bio">Bio</FieldLabel>
+            <textarea
+              id="s-bio"
+              className="input-field"
+              rows={3}
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              style={{ resize: 'none' }}
+            />
+          </div>
 
-        {/* Save */}
-        <div className="flex items-center">
-          <button type="button" className="btn-gold" onClick={handleProfileSave}>
-            Sauvegarder
-          </button>
-          <SavedIndicator show={profileSaved} />
+          {/* Save */}
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <button type="button" className="btn-gold" onClick={handleProfileSave}>
+              Sauvegarder
+            </button>
+            <SavedIndicator show={profileSaved} />
+          </div>
         </div>
       </section>
 
       {/* ---------------------------------------------------------------- */}
       {/* Section 2 – Projet                                               */}
       {/* ---------------------------------------------------------------- */}
-      <section className="glass-card p-6 space-y-5">
-        <h2 className="text-lg font-semibold text-white">Projet</h2>
+      <section className="glass-card" style={{ padding: '22px 24px' }}>
+        <SectionHeader title="Projet" />
+        <div style={sectionStyle}>
 
-        {/* Mixtape name */}
-        <div>
-          <label className="block text-sm text-white/70 mb-1">Nom de la mixtape</label>
-          <input
-            type="text"
-            className="input-field w-full"
-            value={mixtapeName}
-            onChange={(e) => setMixtapeName(e.target.value)}
-          />
-        </div>
+          {/* Nom mixtape */}
+          <div style={fieldStyle}>
+            <FieldLabel htmlFor="s-mixtape">Nom de la mixtape</FieldLabel>
+            <input
+              id="s-mixtape"
+              type="text"
+              className="input-field"
+              value={mixtapeName}
+              onChange={(e) => setMixtapeName(e.target.value)}
+            />
+          </div>
 
-        {/* Subtitle */}
-        <div>
-          <label className="block text-sm text-white/70 mb-1">Sous-titre</label>
-          <input
-            type="text"
-            className="input-field w-full"
-            value={subtitle}
-            onChange={(e) => setSubtitle(e.target.value)}
-          />
-        </div>
+          {/* Subtitle */}
+          <div style={fieldStyle}>
+            <FieldLabel htmlFor="s-subtitle">Sous-titre</FieldLabel>
+            <input
+              id="s-subtitle"
+              type="text"
+              className="input-field"
+              value={subtitle}
+              onChange={(e) => setSubtitle(e.target.value)}
+            />
+          </div>
 
-        {/* Target date */}
-        <div>
-          <label className="block text-sm text-white/70 mb-1">Date cible</label>
-          <input
-            type="date"
-            className="input-field w-full"
-            value={targetDate}
-            onChange={(e) => setTargetDate(e.target.value)}
-          />
-        </div>
+          {/* Target date */}
+          <div style={fieldStyle}>
+            <FieldLabel htmlFor="s-date">Date cible</FieldLabel>
+            <input
+              id="s-date"
+              type="date"
+              className="input-field"
+              value={targetDate}
+              onChange={(e) => setTargetDate(e.target.value)}
+            />
+          </div>
 
-        {/* Save */}
-        <div className="flex items-center">
-          <button type="button" className="btn-gold" onClick={handleProjectSave}>
-            Sauvegarder
-          </button>
-          <SavedIndicator show={projectSaved} />
+          {/* Save */}
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <button type="button" className="btn-gold" onClick={handleProjectSave}>
+              Sauvegarder
+            </button>
+            <SavedIndicator show={projectSaved} />
+          </div>
         </div>
       </section>
 
       {/* ---------------------------------------------------------------- */}
       {/* Section 3 – Compte                                               */}
       {/* ---------------------------------------------------------------- */}
-      <section className="glass-card p-6 space-y-5">
-        <h2 className="text-lg font-semibold text-white">Compte</h2>
+      <section className="glass-card" style={{ padding: '22px 24px' }}>
+        <SectionHeader title="Compte" />
+        <div style={sectionStyle}>
 
-        {/* Email (readonly) */}
-        <div>
-          <label className="block text-sm text-white/70 mb-1">Email</label>
-          <input
-            type="email"
-            className="input-field w-full bg-white/5 cursor-not-allowed"
-            value={user.email}
-            readOnly
-          />
-        </div>
+          {/* Email (readonly) */}
+          <div style={fieldStyle}>
+            <FieldLabel htmlFor="s-email">Email</FieldLabel>
+            <input
+              id="s-email"
+              type="email"
+              className="input-field"
+              value={user.email}
+              readOnly
+              style={{
+                background: 'rgba(200,134,10,0.04)',
+                color: 'var(--color-txt3)',
+                cursor: 'not-allowed',
+              }}
+            />
+          </div>
 
-        {/* Change password */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-medium text-white/80">Changer le mot de passe</h3>
-
-          <input
-            type="password"
-            className="input-field w-full"
-            placeholder="Ancien mot de passe"
-            value={oldPassword}
-            onChange={(e) => setOldPassword(e.target.value)}
-          />
-          <input
-            type="password"
-            className="input-field w-full"
-            placeholder="Nouveau mot de passe"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-          <input
-            type="password"
-            className="input-field w-full"
-            placeholder="Confirmer nouveau mot de passe"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-
-          {passwordError && <p className="text-red-400 text-sm">{passwordError}</p>}
-          {passwordSuccess && <p className="text-green-400 text-sm">{passwordSuccess}</p>}
-
-          <button type="button" className="btn-outline" onClick={handlePasswordChange}>
-            Changer
-          </button>
-        </div>
-
-        {/* Delete account */}
-        <div className="space-y-3 pt-4 border-t border-white/10">
-          <h3 className="text-sm font-medium text-white/80">Supprimer le compte</h3>
-          <p className="text-red-400 text-sm">
-            Attention : cette action est irréversible. Toutes vos données seront supprimées.
-          </p>
-          <button
-            type="button"
-            className="px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition-colors"
-            onClick={handleDeleteAccount}
+          {/* Change password */}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 10,
+              paddingTop: 4,
+            }}
           >
-            Supprimer mon compte
-          </button>
+            <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-txt2)' }}>
+              Changer le mot de passe
+            </p>
+
+            <input
+              type="password"
+              className="input-field"
+              placeholder="Ancien mot de passe"
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+            />
+            <input
+              type="password"
+              className="input-field"
+              placeholder="Nouveau mot de passe"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <input
+              type="password"
+              className="input-field"
+              placeholder="Confirmer le nouveau mot de passe"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+
+            {passwordError && (
+              <p style={{ fontSize: '0.82rem', color: '#dc2626', fontWeight: 500 }}>
+                {passwordError}
+              </p>
+            )}
+            {passwordSuccess && (
+              <p style={{ fontSize: '0.82rem', color: '#16a34a', fontWeight: 500 }}>
+                {passwordSuccess}
+              </p>
+            )}
+
+            <button
+              type="button"
+              className="btn-outline"
+              onClick={handlePasswordChange}
+              style={{ alignSelf: 'flex-start' }}
+            >
+              Changer
+            </button>
+          </div>
+
+          {/* Delete account – danger zone */}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 10,
+              paddingTop: 16,
+              borderTop: '1px solid rgba(239,68,68,0.15)',
+            }}
+          >
+            <p style={{ fontSize: '0.85rem', fontWeight: 600, color: '#dc2626' }}>
+              Zone dangereuse
+            </p>
+            <p style={{ fontSize: '0.82rem', color: '#ef4444' }}>
+              La suppression du compte est irréversible. Toutes vos données seront perdues.
+            </p>
+            <button
+              type="button"
+              onClick={handleDeleteAccount}
+              style={{
+                alignSelf: 'flex-start',
+                padding: '8px 16px',
+                borderRadius: 10,
+                background: 'rgba(239,68,68,0.10)',
+                border: '1px solid rgba(239,68,68,0.30)',
+                color: '#dc2626',
+                fontWeight: 600,
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+                fontFamily: 'var(--font-body)',
+                transition: 'background 0.2s',
+              }}
+            >
+              Supprimer mon compte
+            </button>
+          </div>
         </div>
       </section>
     </div>

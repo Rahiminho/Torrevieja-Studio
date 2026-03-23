@@ -2,12 +2,12 @@ import { useRef } from 'react';
 import { useStore } from '../store';
 
 // ---------------------------------------------------------------------------
-// Icons (inline SVG)
+// Icons
 // ---------------------------------------------------------------------------
 
-function MusicIcon({ className = 'w-12 h-12' }: { className?: string }) {
+function MusicIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.4}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z" />
     </svg>
   );
@@ -15,7 +15,7 @@ function MusicIcon({ className = 'w-12 h-12' }: { className?: string }) {
 
 function ThumbUpIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14zm-9 11H3a2 2 0 01-2-2v-7a2 2 0 012-2h2" />
     </svg>
   );
@@ -23,8 +23,16 @@ function ThumbUpIcon() {
 
 function ThumbDownIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M10 15V19a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10zm9-13h2a2 2 0 012 2v7a2 2 0 01-2 2h-2" />
+    </svg>
+  );
+}
+
+function DownloadIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
     </svg>
   );
 }
@@ -58,7 +66,7 @@ export default function FinalePage() {
     reader.readAsDataURL(file);
   }
 
-  // ---- Editable text blur handlers ----
+  // ---- Editable text ----
   function handleTitleBlur(e: React.FocusEvent<HTMLDivElement>) {
     const text = e.currentTarget.textContent?.trim() ?? '';
     if (text && text !== projectSettings.mixtapeName) {
@@ -73,7 +81,7 @@ export default function FinalePage() {
     }
   }
 
-  // ---- Votes helpers ----
+  // ---- Vote helpers ----
   function getUpCount(trackId: string): number {
     return votes.filter((v) => v.trackId === trackId && v.direction === 'up').length;
   }
@@ -88,7 +96,7 @@ export default function FinalePage() {
 
   function getCurrentUserVote(trackId: string): 'up' | 'down' | null {
     if (!currentUser) return null;
-    const v = votes.find((v) => v.trackId === trackId && v.userId === currentUser.id);
+    const v = votes.find((vt) => vt.trackId === trackId && vt.userId === currentUser.id);
     return v?.direction ?? null;
   }
 
@@ -111,7 +119,7 @@ export default function FinalePage() {
     const lines: string[] = [];
     lines.push(projectSettings.mixtapeName);
     lines.push(projectSettings.subtitle);
-    lines.push('\u2550'.repeat(25));
+    lines.push('\u2550'.repeat(30));
     lines.push('');
 
     sortedTracks.forEach((track, idx) => {
@@ -121,6 +129,9 @@ export default function FinalePage() {
       const dur = track.duration ? ` [${track.duration}]` : '';
       lines.push(`${num}. ${track.title} \u2014 ${artists}${prod}${dur}`);
     });
+
+    lines.push('');
+    lines.push(`\u00a9 ${new Date().getFullYear()} ${projectSettings.mixtapeName}`);
 
     const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -133,26 +144,79 @@ export default function FinalePage() {
     URL.revokeObjectURL(url);
   }
 
-  // ---- Render ----
   return (
-    <div className="space-y-8">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+      {/* Header */}
+      <div>
+        <h1
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: '1.6rem',
+            fontWeight: 700,
+            color: 'var(--color-txt)',
+            letterSpacing: '-0.02em',
+          }}
+        >
+          La Finale
+        </h1>
+        <p style={{ fontSize: '0.85rem', color: 'var(--color-txt3)', marginTop: 3 }}>
+          Tracklist définitive · votes · export
+        </p>
+      </div>
+
       {/* Banner section */}
-      <div className="glass-card p-6 flex flex-col sm:flex-row items-center gap-6">
-        {/* Cover image */}
+      <div
+        className="glass-card"
+        style={{
+          padding: '24px',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 24,
+          flexWrap: 'wrap',
+        }}
+      >
+        {/* Cover upload zone */}
         <button
           type="button"
           onClick={handleCoverClick}
-          className="flex-shrink-0 w-[172px] h-[172px] rounded-2xl overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-gold"
+          style={{
+            flexShrink: 0,
+            width: 172,
+            height: 172,
+            borderRadius: 16,
+            overflow: 'hidden',
+            cursor: 'pointer',
+            border: '2px dashed rgba(200,134,10,0.35)',
+            background: 'none',
+            padding: 0,
+            transition: 'border-color 0.2s, transform 0.2s',
+            position: 'relative',
+          }}
+          title="Cliquer pour changer la pochette"
         >
           {projectSettings.coverUrl ? (
             <img
               src={projectSettings.coverUrl}
-              alt="Cover"
-              className="w-full h-full object-cover"
+              alt="Pochette"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-gold/60 to-amber-700/80 flex items-center justify-center text-white/80">
-              <MusicIcon className="w-16 h-16" />
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                background: 'linear-gradient(135deg, rgba(200,134,10,0.12), rgba(212,112,10,0.18))',
+                color: 'var(--color-txt3)',
+              }}
+            >
+              <MusicIcon />
+              <span style={{ fontSize: '0.72rem', fontWeight: 600 }}>Ajouter pochette</span>
             </div>
           )}
         </button>
@@ -160,17 +224,34 @@ export default function FinalePage() {
           ref={fileInputRef}
           type="file"
           accept="image/*"
-          className="hidden"
+          style={{ display: 'none' }}
           onChange={handleCoverChange}
         />
 
         {/* Title & subtitle */}
-        <div className="flex-1 min-w-0 text-center sm:text-left">
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div
             contentEditable
             suppressContentEditableWarning
             onBlur={handleTitleBlur}
-            className="font-['Playfair_Display',serif] text-2xl font-bold text-txt1 outline-none focus:ring-1 focus:ring-gold/50 rounded px-1"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: '1.5rem',
+              fontWeight: 700,
+              color: 'var(--color-txt)',
+              outline: 'none',
+              borderBottom: '1px solid transparent',
+              transition: 'border-color 0.2s',
+              paddingBottom: 2,
+              letterSpacing: '-0.02em',
+              cursor: 'text',
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.borderBottomColor = 'var(--color-gold)';
+            }}
+            onBlurCapture={(e) => {
+              e.currentTarget.style.borderBottomColor = 'transparent';
+            }}
           >
             {projectSettings.mixtapeName}
           </div>
@@ -178,97 +259,215 @@ export default function FinalePage() {
             contentEditable
             suppressContentEditableWarning
             onBlur={handleSubtitleBlur}
-            className="italic text-txt3 mt-1 outline-none focus:ring-1 focus:ring-gold/50 rounded px-1"
+            style={{
+              fontStyle: 'italic',
+              color: 'var(--color-txt3)',
+              marginTop: 6,
+              outline: 'none',
+              borderBottom: '1px solid transparent',
+              transition: 'border-color 0.2s',
+              paddingBottom: 2,
+              cursor: 'text',
+              fontSize: '0.95rem',
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.borderBottomColor = 'rgba(200,134,10,0.40)';
+            }}
+            onBlurCapture={(e) => {
+              e.currentTarget.style.borderBottomColor = 'transparent';
+            }}
           >
             {projectSettings.subtitle}
           </div>
+          <p
+            style={{
+              marginTop: 12,
+              fontSize: '0.78rem',
+              color: 'var(--color-txt4)',
+              fontStyle: 'italic',
+            }}
+          >
+            Cliquez sur le titre ou sous-titre pour modifier
+          </p>
         </div>
       </div>
 
       {/* Track list */}
-      <div className="space-y-3">
-        {sortedTracks.map((track, idx) => {
-          const artistStr = resolveArtists(track.artistIds, track.extraArtists);
-          const upCount = getUpCount(track.id);
-          const downCount = getDownCount(track.id);
-          const net = getNetScore(track.id);
-          const userVote = getCurrentUserVote(track.id);
-
-          return (
-            <div key={track.id} className="glass-card px-4 py-3 flex items-center gap-4 flex-wrap">
-              {/* Position */}
-              <span className="font-['Playfair_Display',serif] text-gold font-bold text-lg w-8 text-right flex-shrink-0">
-                {String(idx + 1).padStart(2, '0')}
-              </span>
-
-              {/* Track info */}
-              <div className="flex-1 min-w-0">
-                <div className="font-bold text-txt1 truncate">{track.title}</div>
-                <div className="text-sm text-txt3 truncate">{artistStr}</div>
-              </div>
-
-              {/* Duration */}
-              {track.duration && (
-                <span className="text-sm text-txt4 flex-shrink-0">{track.duration}</span>
-              )}
-
-              {/* Vote section */}
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <button
-                  type="button"
-                  onClick={() => handleVote(track.id, 'up')}
-                  className={`p-1.5 rounded-lg transition-colors ${
-                    userVote === 'up'
-                      ? 'bg-green-500/20 text-green-400'
-                      : 'text-txt4 hover:text-green-400 hover:bg-green-500/10'
-                  }`}
-                  title="Vote up"
-                >
-                  <ThumbUpIcon />
-                </button>
-                <span className="text-xs text-txt4 min-w-[1rem] text-center">{upCount}</span>
-
-                <button
-                  type="button"
-                  onClick={() => handleVote(track.id, 'down')}
-                  className={`p-1.5 rounded-lg transition-colors ${
-                    userVote === 'down'
-                      ? 'bg-red-500/20 text-red-400'
-                      : 'text-txt4 hover:text-red-400 hover:bg-red-500/10'
-                  }`}
-                  title="Vote down"
-                >
-                  <ThumbDownIcon />
-                </button>
-                <span className="text-xs text-txt4 min-w-[1rem] text-center">{downCount}</span>
-
-                <span
-                  className={`text-xs font-semibold min-w-[2rem] text-center ${
-                    net > 0 ? 'text-green-400' : net < 0 ? 'text-red-400' : 'text-txt4'
-                  }`}
-                >
-                  {net > 0 ? `+${net}` : net}
-                </span>
-              </div>
-            </div>
-          );
-        })}
-
-        {sortedTracks.length === 0 && (
-          <div className="glass-card p-8 text-center text-txt4">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {sortedTracks.length === 0 ? (
+          <div
+            className="glass-card"
+            style={{ padding: '40px 20px', textAlign: 'center', color: 'var(--color-txt4)' }}
+          >
             Aucun morceau dans la tracklist.
           </div>
+        ) : (
+          sortedTracks.map((track, idx) => {
+            const artistStr = resolveArtists(track.artistIds, track.extraArtists);
+            const upCount = getUpCount(track.id);
+            const downCount = getDownCount(track.id);
+            const net = getNetScore(track.id);
+            const userVote = getCurrentUserVote(track.id);
+
+            return (
+              <div
+                key={track.id}
+                className="glass-card"
+                style={{
+                  padding: '12px 16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 14,
+                  flexWrap: 'wrap',
+                }}
+              >
+                {/* Position number */}
+                <span
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '1.1rem',
+                    fontWeight: 700,
+                    color: 'var(--color-gold)',
+                    width: 28,
+                    textAlign: 'right',
+                    flexShrink: 0,
+                  }}
+                >
+                  {String(idx + 1).padStart(2, '0')}
+                </span>
+
+                {/* Track info */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p
+                    style={{
+                      fontWeight: 700,
+                      color: 'var(--color-txt)',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      letterSpacing: '-0.01em',
+                    }}
+                  >
+                    {track.title}
+                  </p>
+                  <p
+                    style={{
+                      fontSize: '0.8rem',
+                      color: 'var(--color-txt3)',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      marginTop: 1,
+                    }}
+                  >
+                    {artistStr}
+                    {track.prod && <span style={{ color: 'var(--color-txt4)' }}> · Prod. {track.prod}</span>}
+                  </p>
+                </div>
+
+                {/* Duration */}
+                {track.duration && (
+                  <span
+                    style={{
+                      fontSize: '0.82rem',
+                      color: 'var(--color-txt4)',
+                      flexShrink: 0,
+                      fontFamily: 'var(--font-mono)',
+                    }}
+                  >
+                    {track.duration}
+                  </span>
+                )}
+
+                {/* Vote section */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                  <button
+                    type="button"
+                    onClick={() => handleVote(track.id, 'up')}
+                    style={{
+                      padding: '5px 8px',
+                      borderRadius: 8,
+                      border: 'none',
+                      cursor: currentUser ? 'pointer' : 'default',
+                      display: 'flex',
+                      alignItems: 'center',
+                      background: userVote === 'up' ? 'rgba(34,197,94,0.18)' : 'rgba(200,134,10,0.07)',
+                      color: userVote === 'up' ? '#16a34a' : 'var(--color-txt4)',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    <ThumbUpIcon />
+                  </button>
+                  <span
+                    style={{
+                      fontSize: '0.75rem',
+                      color: 'var(--color-txt4)',
+                      fontFamily: 'var(--font-mono)',
+                      minWidth: 14,
+                      textAlign: 'center',
+                    }}
+                  >
+                    {upCount}
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() => handleVote(track.id, 'down')}
+                    style={{
+                      padding: '5px 8px',
+                      borderRadius: 8,
+                      border: 'none',
+                      cursor: currentUser ? 'pointer' : 'default',
+                      display: 'flex',
+                      alignItems: 'center',
+                      background: userVote === 'down' ? 'rgba(239,68,68,0.18)' : 'rgba(200,134,10,0.07)',
+                      color: userVote === 'down' ? '#dc2626' : 'var(--color-txt4)',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    <ThumbDownIcon />
+                  </button>
+                  <span
+                    style={{
+                      fontSize: '0.75rem',
+                      color: 'var(--color-txt4)',
+                      fontFamily: 'var(--font-mono)',
+                      minWidth: 14,
+                      textAlign: 'center',
+                    }}
+                  >
+                    {downCount}
+                  </span>
+
+                  <span
+                    style={{
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      fontFamily: 'var(--font-mono)',
+                      minWidth: 28,
+                      textAlign: 'center',
+                      color: net > 0 ? '#16a34a' : net < 0 ? '#dc2626' : 'var(--color-txt4)',
+                    }}
+                  >
+                    {net > 0 ? `+${net}` : net}
+                  </span>
+                </div>
+              </div>
+            );
+          })
         )}
       </div>
 
       {/* Export button */}
-      <div className="flex justify-center">
+      <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 8 }}>
         <button
           type="button"
           onClick={handleExport}
           className="btn-gold"
           disabled={sortedTracks.length === 0}
+          style={{ display: 'flex', alignItems: 'center', gap: 8 }}
         >
+          <DownloadIcon />
           Exporter TXT
         </button>
       </div>
