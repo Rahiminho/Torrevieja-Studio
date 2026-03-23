@@ -423,7 +423,9 @@ export default function FilesPage() {
                   <button
                     onClick={() => handleDeleteFile(file.id)}
                     className="text-txt3 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity p-1"
-                    title="Supprimer"
+                    title="Supprimer">
+                <TrashIcon />
+              </button>
                   
                                           <button
                                                                     onClick={() => handleOpenFile(file)}
