@@ -33,9 +33,10 @@ export default function Layout({ children }: LayoutProps) {
         <main
           style={{
             flex: 1,
-            padding: '16px 16px 80px',
+            padding: '12px 16px 88px',
             overflowY: 'auto',
           }}
+          className="animate-fade-in"
         >
           {children}
         </main>
@@ -53,11 +54,11 @@ export default function Layout({ children }: LayoutProps) {
       <div
         style={{
           flex: 1,
-          marginLeft: 220,
+          marginLeft: 232,
           display: 'flex',
           flexDirection: 'column',
           minHeight: '100vh',
-          transition: 'margin-right 0.3s ease',
+          transition: 'margin-right 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
           marginRight: chatOpen ? 360 : 0,
         }}
       >
@@ -66,9 +67,10 @@ export default function Layout({ children }: LayoutProps) {
         <main
           style={{
             flex: 1,
-            padding: '24px 28px',
+            padding: '24px 32px',
             overflowY: 'auto',
           }}
+          className="animate-fade-in"
         >
           {children}
         </main>
@@ -87,12 +89,12 @@ export default function Layout({ children }: LayoutProps) {
             zIndex: 95,
             display: 'flex',
             flexDirection: 'column',
-            borderLeft: '1px solid rgba(255,220,130,0.38)',
+            borderLeft: '0.5px solid rgba(200,140,40,0.18)',
             borderRadius: 0,
             borderTop: 'none',
             borderBottom: 'none',
             borderRight: 'none',
-            animation: 'fade-in 0.2s ease forwards',
+            animation: 'fade-in 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards',
           }}
         >
           {/* Chat header */}
@@ -102,17 +104,18 @@ export default function Layout({ children }: LayoutProps) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              padding: '0 16px',
-              borderBottom: '1px solid rgba(255,210,100,0.20)',
+              padding: '0 20px',
+              borderBottom: '0.5px solid rgba(200,140,40,0.12)',
               flexShrink: 0,
             }}
           >
             <span
               style={{
-                fontFamily: 'var(--font-display)',
-                fontWeight: 700,
-                fontSize: '1rem',
+                fontFamily: 'var(--font-body)',
+                fontWeight: 600,
+                fontSize: '0.95rem',
                 color: 'var(--color-txt)',
+                letterSpacing: '-0.01em',
               }}
             >
               Chat
@@ -120,24 +123,29 @@ export default function Layout({ children }: LayoutProps) {
             <button
               onClick={handleToggleChat}
               style={{
-                background: 'none',
+                background: 'rgba(200,134,10,0.06)',
                 border: 'none',
                 cursor: 'pointer',
-                color: 'var(--color-txt4)',
-                padding: 4,
-                borderRadius: 6,
+                color: 'var(--color-txt3)',
+                padding: 6,
+                borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
-                transition: 'color 0.2s',
+                justifyContent: 'center',
+                width: 28,
+                height: 28,
+                transition: 'all 0.2s ease',
               }}
               onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(200,134,10,0.12)';
                 (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-gold)';
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-txt4)';
+                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(200,134,10,0.06)';
+                (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-txt3)';
               }}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
@@ -158,7 +166,7 @@ export default function Layout({ children }: LayoutProps) {
               textAlign: 'center',
             }}
           >
-            ChatPanel coming soon...
+            Chat bientot disponible...
           </div>
         </div>
       )}

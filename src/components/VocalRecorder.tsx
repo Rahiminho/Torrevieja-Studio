@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import Modal from './Modal';
 import { useStore } from '../store';
 import type { VocalType } from '../types';

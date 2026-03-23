@@ -1,10 +1,9 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { useStore } from '../store';
 import Modal from '../components/Modal';
-import type { Track, TrackStatus, VocalType } from '../types';
+import type { Track, TrackStatus } from '../types';
 
 const STATUS_OPTIONS: TrackStatus[] = ['Idée', 'En cours', 'À mixer', 'Mixé'];
-const VOCAL_TYPE_OPTIONS: VocalType[] = ['topline', 'yaourt', 'couplet', 'refrain', 'test'];
 
 function statusPillClass(status: TrackStatus): string {
   switch (status) {

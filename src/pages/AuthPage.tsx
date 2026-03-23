@@ -7,20 +7,11 @@ type AuthTab = 'login' | 'register';
 
 const ROLES: Role[] = ['Rappeur', 'Beatmaker', 'Chanteur', 'Mixeur', 'DA', 'Multi'];
 
-const inputStyle: React.CSSProperties = {
-  width: '100%',
-  padding: '10px 14px',
-  border: '1px solid #d1d5db',
-  borderRadius: '8px',
-  fontSize: '14px',
-  outline: 'none',
-  boxSizing: 'border-box',
-};
-
 export default function AuthPage() {
-  const { state, dispatch } = useStore();
+  const { state, dispatch, loginAsync } = useStore();
   const [tab, setTab] = useState<AuthTab>('login');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   // Login fields
   const [loginEmail, setLoginEmail] = useState('');
@@ -33,38 +24,43 @@ export default function AuthPage() {
   const [regPassword, setRegPassword] = useState('');
   const [regRole, setRegRole] = useState<Role>('Rappeur');
 
-  function handleLogin(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setError('');
+
     if (!loginEmail || !loginPassword) {
       setError('Veuillez remplir tous les champs.');
       return;
     }
-    const user = state.users.find(
-      (u) => u.email === loginEmail && u.password === loginPassword,
-    );
+
+    setLoading(true);
+    const user = await loginAsync(loginEmail, loginPassword);
+    setLoading(false);
+
     if (!user) {
       setError('Email ou mot de passe incorrect.');
-      return;
     }
-    dispatch({ type: 'LOGIN', payload: { email: loginEmail, password: loginPassword } });
   }
 
   function handleRegister(e: React.FormEvent) {
     e.preventDefault();
     setError('');
+
     if (!regPrenom || !regPseudo || !regEmail || !regPassword) {
       setError('Veuillez remplir tous les champs.');
       return;
     }
+
     if (regPassword.length < 6) {
       setError('Le mot de passe doit contenir au moins 6 caractères.');
       return;
     }
+
     if (state.users.some((u) => u.email === regEmail)) {
       setError('Un compte avec cet email existe déjà.');
       return;
     }
+
     dispatch({
       type: 'REGISTER',
       payload: {
@@ -77,10 +73,12 @@ export default function AuthPage() {
     });
   }
 
-  function handleDemo() {
+  async function handleDemo() {
     const demoUser = state.users[0];
     if (demoUser) {
-      dispatch({ type: 'LOGIN', payload: { email: demoUser.email, password: demoUser.password } });
+      setLoading(true);
+      await loginAsync(demoUser.email, demoUser.password);
+      setLoading(false);
     }
   }
 
@@ -90,133 +88,265 @@ export default function AuthPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#fdf6e8', padding: '24px' }}>
-      {/* Logo & Title */}
-      <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-        <SunLogo />
-        <h1 style={{ fontSize: '28px', fontFamily: 'serif', marginTop: '12px', color: '#1c1408' }}>Torrevieja Studio</h1>
-        <p style={{ color: '#8c6830', fontSize: '14px', marginTop: '4px' }}>La mixtape de l'été</p>
-      </div>
-
-      {/* Auth Card */}
-      <div style={{ background: 'white', borderRadius: '16px', boxShadow: '0 4px 24px rgba(0,0,0,0.1)', width: '100%', maxWidth: '420px', overflow: 'hidden' }}>
-
-        {/* Tabs */}
-        <div style={{ display: 'flex', borderBottom: '1px solid #e5e7eb' }}>
-          <button
-            onClick={() => switchTab('login')}
+    <div
+      className="min-h-screen flex items-center justify-center px-4 py-8"
+      style={{
+        background:
+          'radial-gradient(ellipse 100% 80% at 50% 20%, rgba(232,160,32,0.20) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 80% 80%, rgba(200,134,10,0.10) 0%, transparent 60%), var(--color-cream)',
+      }}
+    >
+      <div className="w-full max-w-[400px] animate-fade-in">
+        {/* Logo & Title */}
+        <div className="flex flex-col items-center mb-8">
+          <SunLogo size={100} />
+          <h1
             style={{
-              flex: 1,
-              padding: '14px',
-              fontSize: '14px',
-              fontWeight: 600,
-              border: 'none',
-              cursor: 'pointer',
-              background: tab === 'login' ? '#c8860a' : '#f9fafb',
-              color: tab === 'login' ? 'white' : '#6b7280',
-              transition: 'all 0.2s',
+              fontFamily: 'var(--font-display)',
+              fontSize: '1.75rem',
+              fontWeight: 700,
+              color: 'var(--color-gold)',
+              marginTop: 16,
+              textAlign: 'center',
+              letterSpacing: '-0.02em',
             }}
           >
-            Connexion
-          </button>
-          <button
-            onClick={() => switchTab('register')}
+            Torrevieja Studio
+          </h1>
+          <p
             style={{
-              flex: 1,
-              padding: '14px',
-              fontSize: '14px',
-              fontWeight: 600,
-              border: 'none',
-              cursor: 'pointer',
-              background: tab === 'register' ? '#c8860a' : '#f9fafb',
-              color: tab === 'register' ? 'white' : '#6b7280',
-              transition: 'all 0.2s',
+              color: 'var(--color-txt3)',
+              fontStyle: 'italic',
+              marginTop: 4,
+              textAlign: 'center',
+              fontSize: '0.9rem',
             }}
           >
-            Créer un compte
-          </button>
+            La mixtape de l&apos;été
+          </p>
         </div>
 
-        <div style={{ padding: '28px' }}>
+        {/* Auth Card */}
+        <div className="glass-card" style={{ padding: '1.5rem' }}>
+          {/* Tabs - iOS segmented control style */}
+          <div
+            style={{
+              display: 'flex',
+              marginBottom: 24,
+              borderRadius: 10,
+              overflow: 'hidden',
+              background: 'rgba(200,134,10,0.06)',
+              padding: 3,
+              gap: 2,
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => switchTab('login')}
+              style={{
+                flex: 1,
+                padding: '8px 0',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                fontFamily: 'var(--font-body)',
+                border: 'none',
+                cursor: 'pointer',
+                borderRadius: 8,
+                transition: 'all 0.2s ease',
+                background: tab === 'login' ? 'rgba(253,246,232,0.85)' : 'transparent',
+                color: tab === 'login' ? 'var(--color-gold)' : 'var(--color-txt3)',
+                boxShadow: tab === 'login' ? '0 1px 4px rgba(0,0,0,0.06)' : 'none',
+              }}
+            >
+              Connexion
+            </button>
+            <button
+              type="button"
+              onClick={() => switchTab('register')}
+              style={{
+                flex: 1,
+                padding: '8px 0',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                fontFamily: 'var(--font-body)',
+                border: 'none',
+                cursor: 'pointer',
+                borderRadius: 8,
+                transition: 'all 0.2s ease',
+                background: tab === 'register' ? 'rgba(253,246,232,0.85)' : 'transparent',
+                color: tab === 'register' ? 'var(--color-gold)' : 'var(--color-txt3)',
+                boxShadow: tab === 'register' ? '0 1px 4px rgba(0,0,0,0.06)' : 'none',
+              }}
+            >
+              Créer un compte
+            </button>
+          </div>
+
           {/* Error message */}
           {error && (
-            <div style={{ background: '#fee2e2', color: '#dc2626', padding: '10px 14px', borderRadius: '8px', fontSize: '14px', marginBottom: '16px' }}>
+            <div
+              style={{
+                marginBottom: 16,
+                padding: '10px 14px',
+                borderRadius: 10,
+                background: 'rgba(239,68,68,0.08)',
+                border: '0.5px solid rgba(239,68,68,0.2)',
+                color: '#dc2626',
+                fontSize: '0.85rem',
+              }}
+            >
               {error}
             </div>
           )}
 
           {/* Login Form */}
           {tab === 'login' && (
-            <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Email</label>
+                <label
+                  htmlFor="login-email"
+                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 4, fontWeight: 500 }}
+                >
+                  Email
+                </label>
                 <input
+                  id="login-email"
                   type="email"
-                  style={inputStyle}
+                  className="input-field w-full"
                   placeholder="email@exemple.com"
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
                 />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Mot de passe</label>
+                <label
+                  htmlFor="login-password"
+                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 4, fontWeight: 500 }}
+                >
+                  Mot de passe
+                </label>
                 <input
+                  id="login-password"
                   type="password"
-                  style={inputStyle}
+                  className="input-field w-full"
                   placeholder="••••••"
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
                 />
               </div>
-              <button type="submit" style={{ width: '100%', padding: '12px', background: '#c8860a', color: 'white', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: 600, cursor: 'pointer' }}>
-                Se connecter
+              <button type="submit" className="btn-gold w-full" disabled={loading}>
+                {loading ? 'Connexion...' : 'Se connecter'}
               </button>
             </form>
           )}
 
           {/* Register Form */}
           {tab === 'register' && (
-            <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <form onSubmit={handleRegister} className="space-y-4">
               <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Prénom</label>
-                <input type="text" style={inputStyle} placeholder="Prénom" value={regPrenom} onChange={(e) => setRegPrenom(e.target.value)} />
+                <label
+                  htmlFor="reg-prenom"
+                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 4, fontWeight: 500 }}
+                >
+                  Prénom
+                </label>
+                <input
+                  id="reg-prenom"
+                  type="text"
+                  className="input-field w-full"
+                  placeholder="Prénom"
+                  value={regPrenom}
+                  onChange={(e) => setRegPrenom(e.target.value)}
+                />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Pseudo / Nom d'artiste</label>
-                <input type="text" style={inputStyle} placeholder="Nom d'artiste" value={regPseudo} onChange={(e) => setRegPseudo(e.target.value)} />
+                <label
+                  htmlFor="reg-pseudo"
+                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 4, fontWeight: 500 }}
+                >
+                  Pseudo / Nom d&apos;artiste
+                </label>
+                <input
+                  id="reg-pseudo"
+                  type="text"
+                  className="input-field w-full"
+                  placeholder="Nom d'artiste"
+                  value={regPseudo}
+                  onChange={(e) => setRegPseudo(e.target.value)}
+                />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Email</label>
-                <input type="email" style={inputStyle} placeholder="email@exemple.com" value={regEmail} onChange={(e) => setRegEmail(e.target.value)} />
+                <label
+                  htmlFor="reg-email"
+                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 4, fontWeight: 500 }}
+                >
+                  Email
+                </label>
+                <input
+                  id="reg-email"
+                  type="email"
+                  className="input-field w-full"
+                  placeholder="email@exemple.com"
+                  value={regEmail}
+                  onChange={(e) => setRegEmail(e.target.value)}
+                />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Mot de passe</label>
-                <input type="password" style={inputStyle} placeholder="Min. 6 caractères" value={regPassword} onChange={(e) => setRegPassword(e.target.value)} />
+                <label
+                  htmlFor="reg-password"
+                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 4, fontWeight: 500 }}
+                >
+                  Mot de passe
+                </label>
+                <input
+                  id="reg-password"
+                  type="password"
+                  className="input-field w-full"
+                  placeholder="Min. 6 caractères"
+                  value={regPassword}
+                  onChange={(e) => setRegPassword(e.target.value)}
+                />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Rôle</label>
-                <select style={inputStyle} value={regRole} onChange={(e) => setRegRole(e.target.value as Role)}>
+                <label
+                  htmlFor="reg-role"
+                  style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 4, fontWeight: 500 }}
+                >
+                  Rôle
+                </label>
+                <select
+                  id="reg-role"
+                  className="input-field w-full"
+                  value={regRole}
+                  onChange={(e) => setRegRole(e.target.value as Role)}
+                >
                   {ROLES.map((role) => (
-                    <option key={role} value={role}>{role}</option>
+                    <option key={role} value={role}>
+                      {role}
+                    </option>
                   ))}
                 </select>
               </div>
-              <button type="submit" style={{ width: '100%', padding: '12px', background: '#c8860a', color: 'white', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: 600, cursor: 'pointer' }}>
+              <button type="submit" className="btn-gold w-full">
                 Créer un compte
               </button>
             </form>
           )}
 
           {/* Divider */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '20px 0' }}>
-            <div style={{ flex: 1, height: '1px', background: '#e5e7eb' }} />
-            <span style={{ fontSize: '13px', color: '#9ca3af' }}>ou</span>
-            <div style={{ flex: 1, height: '1px', background: '#e5e7eb' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '20px 0' }}>
+            <div style={{ flex: 1, height: 0.5, background: 'rgba(200,134,10,0.12)' }} />
+            <span style={{ color: 'var(--color-txt4)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>ou</span>
+            <div style={{ flex: 1, height: 0.5, background: 'rgba(200,134,10,0.12)' }} />
           </div>
 
           {/* Demo access */}
-          <button onClick={handleDemo} style={{ width: '100%', padding: '12px', background: 'transparent', color: '#c8860a', border: '1px solid #c8860a', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>
-            Accès démo
+          <button
+            type="button"
+            onClick={handleDemo}
+            className="btn-outline w-full"
+            disabled={loading}
+          >
+            {loading ? 'Chargement...' : 'Accès démo'}
           </button>
         </div>
       </div>

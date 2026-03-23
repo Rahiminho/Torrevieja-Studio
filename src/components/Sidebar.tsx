@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useStore } from '../store';
 import SunLogo from './SunLogo';
@@ -6,7 +7,7 @@ interface NavItem {
   label: string;
   path: string;
   shortcut: string;
-  icon: JSX.Element;
+  icon: ReactNode;
 }
 
 /* ------------------------------------------------------------------ */
@@ -14,14 +15,14 @@ interface NavItem {
 /* ------------------------------------------------------------------ */
 
 const IconHome = (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
     <polyline points="9 22 9 12 15 12 15 22" />
   </svg>
 );
 
 const IconMusic = (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M9 18V5l12-2v13" />
     <circle cx="6" cy="18" r="3" />
     <circle cx="18" cy="16" r="3" />
@@ -29,7 +30,7 @@ const IconMusic = (
 );
 
 const IconText = (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
     <polyline points="14 2 14 8 20 8" />
     <line x1="16" y1="13" x2="8" y2="13" />
@@ -39,13 +40,13 @@ const IconText = (
 );
 
 const IconFolder = (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
   </svg>
 );
 
 const IconUsers = (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
     <circle cx="9" cy="7" r="4" />
     <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
@@ -54,7 +55,7 @@ const IconUsers = (
 );
 
 const IconStar = (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
   </svg>
 );
@@ -81,12 +82,12 @@ export default function Sidebar() {
         position: 'fixed',
         top: 0,
         left: 0,
-        width: 220,
+        width: 232,
         height: '100vh',
         display: 'flex',
         flexDirection: 'column',
         zIndex: 100,
-        borderRight: '1px solid rgba(255,220,130,0.38)',
+        borderRight: '0.5px solid rgba(200,140,40,0.18)',
         borderTop: 'none',
         borderBottom: 'none',
         borderLeft: 'none',
@@ -98,18 +99,19 @@ export default function Sidebar() {
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: 10,
-          padding: '20px 18px 16px',
+          gap: 12,
+          padding: '22px 20px 18px',
         }}
       >
-        <SunLogo size={48} />
+        <SunLogo size={44} />
         <span
           style={{
             fontFamily: "var(--font-display)",
-            fontSize: '1.05rem',
+            fontSize: '1rem',
             fontWeight: 700,
             color: 'var(--color-txt)',
             lineHeight: 1.2,
+            letterSpacing: '-0.01em',
           }}
         >
           Torrevieja
@@ -118,8 +120,11 @@ export default function Sidebar() {
         </span>
       </div>
 
+      {/* Separator */}
+      <div style={{ height: 0.5, background: 'rgba(200,140,40,0.10)', margin: '0 16px' }} />
+
       {/* Navigation */}
-      <nav style={{ flex: 1, padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <nav style={{ flex: 1, padding: '12px 12px', display: 'flex', flexDirection: 'column', gap: 2 }}>
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           const isFinale = item.path === '/finale';
@@ -133,22 +138,23 @@ export default function Sidebar() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 10,
-                padding: '10px 12px',
+                padding: '9px 12px',
                 borderRadius: '0.625rem',
                 border: 'none',
                 cursor: 'pointer',
                 fontFamily: 'var(--font-body)',
-                fontSize: '0.875rem',
+                fontSize: '0.85rem',
                 fontWeight: isActive ? 600 : 500,
+                letterSpacing: '-0.01em',
                 color: isActive
                   ? 'var(--color-gold)'
                   : isFinale
                     ? 'var(--color-gold2)'
                     : 'var(--color-txt2)',
                 background: isActive
-                  ? 'linear-gradient(135deg, rgba(200,134,10,0.12), rgba(232,160,32,0.08))'
+                  ? 'rgba(200,134,10,0.10)'
                   : 'transparent',
-                transition: 'all 0.2s ease',
+                transition: 'all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                 position: 'relative',
                 width: '100%',
                 textAlign: 'left',
@@ -164,7 +170,7 @@ export default function Sidebar() {
                 }
               }}
             >
-              {/* Active indicator */}
+              {/* Active indicator - iOS style pill */}
               {isActive && (
                 <div
                   style={{
@@ -173,14 +179,14 @@ export default function Sidebar() {
                     top: '50%',
                     transform: 'translateY(-50%)',
                     width: 3,
-                    height: 20,
+                    height: 18,
                     borderRadius: 2,
-                    background: 'linear-gradient(180deg, var(--color-gold), var(--color-gold2))',
+                    background: 'linear-gradient(180deg, var(--color-gold2), var(--color-gold))',
                   }}
                 />
               )}
 
-              <span style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+              <span style={{ display: 'flex', alignItems: 'center', flexShrink: 0, opacity: isActive ? 1 : 0.75 }}>
                 {item.icon}
               </span>
               <span style={{ flex: 1 }}>{item.label}</span>
@@ -189,10 +195,10 @@ export default function Sidebar() {
               <span
                 className="opacity-0 group-hover:opacity-100"
                 style={{
-                  fontSize: '0.65rem',
+                  fontSize: '0.6rem',
                   color: 'var(--color-txt4)',
-                  background: 'rgba(200,134,10,0.08)',
-                  padding: '2px 6px',
+                  background: 'rgba(200,134,10,0.06)',
+                  padding: '2px 5px',
                   borderRadius: 4,
                   transition: 'opacity 0.2s',
                   fontFamily: 'var(--font-mono)',
@@ -209,8 +215,8 @@ export default function Sidebar() {
       {user && (
         <div
           style={{
-            padding: '12px 14px 16px',
-            borderTop: '1px solid rgba(255,220,130,0.2)',
+            padding: '14px 16px 18px',
+            borderTop: '0.5px solid rgba(200,140,40,0.10)',
             display: 'flex',
             alignItems: 'center',
             gap: 10,
@@ -219,17 +225,18 @@ export default function Sidebar() {
           {/* Avatar */}
           <div
             style={{
-              width: 36,
-              height: 36,
+              width: 34,
+              height: 34,
               borderRadius: '50%',
               background: user.color,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '0.75rem',
+              fontSize: '0.7rem',
               fontWeight: 700,
               color: '#fff',
               flexShrink: 0,
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
             }}
           >
             {user.initials}
@@ -244,6 +251,7 @@ export default function Sidebar() {
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
+                letterSpacing: '-0.01em',
               }}
             >
               {user.pseudo}
@@ -252,6 +260,7 @@ export default function Sidebar() {
               style={{
                 fontSize: '0.65rem',
                 color: 'var(--color-txt4)',
+                letterSpacing: '0.01em',
               }}
             >
               {user.role}
@@ -263,24 +272,29 @@ export default function Sidebar() {
             onClick={() => dispatch({ type: 'LOGOUT' })}
             title="Déconnexion"
             style={{
-              background: 'none',
+              background: 'rgba(200,134,10,0.04)',
               border: 'none',
               cursor: 'pointer',
               color: 'var(--color-txt4)',
-              padding: 4,
-              borderRadius: 6,
+              padding: 6,
+              borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
-              transition: 'color 0.2s',
+              justifyContent: 'center',
+              width: 28,
+              height: 28,
+              transition: 'all 0.2s ease',
             }}
             onMouseEnter={(e) => {
               (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-gold)';
+              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(200,134,10,0.10)';
             }}
             onMouseLeave={(e) => {
               (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-txt4)';
+              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(200,134,10,0.04)';
             }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
               <polyline points="16 17 21 12 16 7" />
               <line x1="21" y1="12" x2="9" y2="12" />

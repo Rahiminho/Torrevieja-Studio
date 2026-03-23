@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useEffect, type Dispatch, type ReactNode } from 'react';
+import { createContext, useContext, useReducer, useEffect, useCallback, type Dispatch, type ReactNode } from 'react';
 import { createElement } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import type {
@@ -18,6 +18,7 @@ import type {
   VoteDirection,
   ChatChannel,
 } from './types';
+import { fetchAllData, db, subscribeToChanges } from './lib/supabaseSync';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -66,6 +67,7 @@ export interface StoreState {
   messages: ChatMessage[];
   activity: ActivityItem[];
   projectSettings: ProjectSettings;
+  loading: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -74,8 +76,11 @@ export interface StoreState {
 
 export type StoreAction =
   | { type: 'LOGIN'; payload: { email: string; password: string } }
+  | { type: 'LOGIN_SUCCESS'; payload: { user: User } }
   | { type: 'LOGOUT' }
   | { type: 'REGISTER'; payload: { prenom: string; pseudo: string; email: string; password: string; role: Role; bio?: string } }
+  | { type: 'HYDRATE'; payload: Omit<StoreState, 'currentUser' | 'loading'> }
+  | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'ADD_TRACK'; payload: { title: string; artistIds: string[]; extraArtists?: string; prod?: string; status?: TrackStatus; duration?: string; notes?: string; createdBy: string } }
   | { type: 'UPDATE_TRACK'; payload: Partial<Track> & { id: string } }
   | { type: 'DELETE_TRACK'; payload: { id: string; userId: string } }
@@ -96,85 +101,8 @@ export type StoreAction =
   | { type: 'DELETE_USER'; payload: { id: string } };
 
 // ---------------------------------------------------------------------------
-// Demo data
+// Default state
 // ---------------------------------------------------------------------------
-
-const DEMO_USER_RAHIM_ID = 'demo-rahim-001';
-const DEMO_USER_YASSINE_ID = 'demo-yassine-002';
-
-const demoUsers: User[] = [
-  {
-    id: DEMO_USER_RAHIM_ID,
-    prenom: 'Rahim',
-    pseudo: 'Rahim',
-    email: 'rahim@torrevieja.studio',
-    password: 'rahim123',
-    role: 'Rappeur',
-    bio: 'Rappeur depuis le bloc.',
-    photoUrl: '',
-    color: 'hsl(210, 70%, 75%)',
-    initials: 'RA',
-    createdAt: '2025-01-15T10:00:00.000Z',
-  },
-  {
-    id: DEMO_USER_YASSINE_ID,
-    prenom: 'Yassine',
-    pseudo: 'Yassine',
-    email: 'yassine@torrevieja.studio',
-    password: 'yassine123',
-    role: 'Beatmaker',
-    bio: 'Producteur aux mille instrus.',
-    photoUrl: '',
-    color: 'hsl(30, 70%, 75%)',
-    initials: 'YA',
-    createdAt: '2025-01-15T10:05:00.000Z',
-  },
-];
-
-const demoTracks: Track[] = [
-  {
-    id: 'demo-track-001',
-    title: 'Soleil de Torrevieja',
-    artistIds: [DEMO_USER_RAHIM_ID],
-    extraArtists: '',
-    prod: 'Yassine',
-    status: 'En cours',
-    duration: '3:24',
-    progressPct: 60,
-    notes: 'Ambiance summer, flow rapide sur le deuxième couplet.',
-    position: 0,
-    createdBy: DEMO_USER_RAHIM_ID,
-    createdAt: '2025-02-01T14:00:00.000Z',
-  },
-  {
-    id: 'demo-track-002',
-    title: 'Nuit Blanche',
-    artistIds: [DEMO_USER_RAHIM_ID, DEMO_USER_YASSINE_ID],
-    extraArtists: '',
-    prod: 'Yassine',
-    status: 'Idée',
-    duration: '',
-    progressPct: 10,
-    notes: 'Drill sombre, raconter la nuit.',
-    position: 1,
-    createdBy: DEMO_USER_YASSINE_ID,
-    createdAt: '2025-02-10T20:30:00.000Z',
-  },
-  {
-    id: 'demo-track-003',
-    title: 'Brise Marine',
-    artistIds: [DEMO_USER_YASSINE_ID],
-    extraArtists: 'Feat. Lina',
-    prod: 'Yassine',
-    status: 'À mixer',
-    duration: '4:02',
-    progressPct: 85,
-    notes: 'Prêt pour le mix, vérifier le refrain.',
-    position: 2,
-    createdBy: DEMO_USER_YASSINE_ID,
-    createdAt: '2025-03-05T09:15:00.000Z',
-  },
-];
 
 const defaultProjectSettings: ProjectSettings = {
   mixtapeName: 'Torrevieja Tape Vol. 1',
@@ -186,8 +114,8 @@ const defaultProjectSettings: ProjectSettings = {
 function buildInitialState(): StoreState {
   return {
     currentUser: null,
-    users: demoUsers,
-    tracks: demoTracks,
+    users: [],
+    tracks: [],
     lyrics: [],
     vocals: [],
     files: [],
@@ -196,36 +124,30 @@ function buildInitialState(): StoreState {
     messages: [],
     activity: [],
     projectSettings: defaultProjectSettings,
+    loading: true,
   };
 }
 
 // ---------------------------------------------------------------------------
-// localStorage persistence
+// Session persistence (only current user login)
 // ---------------------------------------------------------------------------
 
-const STORAGE_KEY = 'torrevieja-studio';
+const SESSION_KEY = 'torrevieja-session';
 
-function loadState(): StoreState {
+function loadSession(): { email: string; password: string } | null {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw) as StoreState;
-      // Ensure all keys exist (handles schema evolution)
-      const base = buildInitialState();
-      return { ...base, ...parsed };
-    }
-  } catch {
-    // Corrupted data – fall back to defaults
-  }
-  return buildInitialState();
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch { /* ignore */ }
+  return null;
 }
 
-function saveState(state: StoreState): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch {
-    // Storage full or unavailable – silent fail
-  }
+function saveSession(email: string, password: string): void {
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ email, password }));
+}
+
+function clearSession(): void {
+  localStorage.removeItem(SESSION_KEY);
 }
 
 // ---------------------------------------------------------------------------
@@ -234,16 +156,27 @@ function saveState(state: StoreState): void {
 
 function storeReducer(state: StoreState, action: StoreAction): StoreState {
   switch (action.type) {
-    // ---- Auth ----
-    case 'LOGIN': {
-      const { email, password } = action.payload;
-      const user = state.users.find((u) => u.email === email && u.password === password);
-      if (!user) return state;
-      return { ...state, currentUser: user };
+    case 'HYDRATE': {
+      return { ...state, ...action.payload, loading: false };
     }
 
-    case 'LOGOUT':
+    case 'SET_LOADING':
+      return { ...state, loading: action.payload };
+
+    // ---- Auth ----
+    case 'LOGIN': {
+      // Handled async in the provider – reducer is a no-op
+      return state;
+    }
+
+    case 'LOGIN_SUCCESS': {
+      return { ...state, currentUser: action.payload.user };
+    }
+
+    case 'LOGOUT': {
+      clearSession();
       return { ...state, currentUser: null };
+    }
 
     case 'REGISTER': {
       const { prenom, pseudo, email, password, role, bio } = action.payload;
@@ -262,6 +195,10 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
         createdAt: now(),
       };
       const activityEntry = createActivityItem(newUser.id, 'register', `${pseudo} a rejoint le studio.`);
+      // Async: persist to Supabase
+      db.insertUser(newUser);
+      db.insertActivity(activityEntry);
+      saveSession(email, password);
       return {
         ...state,
         currentUser: newUser,
@@ -288,6 +225,8 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
         createdAt: now(),
       };
       const activityEntry = createActivityItem(createdBy, 'add_track', `Nouveau morceau ajouté : ${title}`);
+      db.insertTrack(newTrack);
+      db.insertActivity(activityEntry);
       return {
         ...state,
         tracks: [...state.tracks, newTrack],
@@ -297,6 +236,7 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
 
     case 'UPDATE_TRACK': {
       const { id, ...changes } = action.payload;
+      db.updateTrack(id, changes);
       return {
         ...state,
         tracks: state.tracks.map((t) => (t.id === id ? { ...t, ...changes } : t)),
@@ -307,6 +247,8 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
       const { id, userId } = action.payload;
       const track = state.tracks.find((t) => t.id === id);
       const activityEntry = createActivityItem(userId, 'delete_track', `Morceau supprimé : ${track?.title ?? id}`);
+      db.deleteTrack(id);
+      db.insertActivity(activityEntry);
       return {
         ...state,
         tracks: state.tracks.filter((t) => t.id !== id),
@@ -323,6 +265,7 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
         const idx = orderedIds.indexOf(t.id);
         return idx !== -1 ? { ...t, position: idx } : t;
       });
+      db.reorderTracks(orderedIds);
       return { ...state, tracks: reordered };
     }
 
@@ -332,9 +275,11 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
       const existing = state.lyrics.find((l) => l.trackId === trackId);
       let updatedLyrics: Lyrics[];
       if (existing) {
+        const updated = { ...existing, content, updatedBy, updatedAt: now() };
         updatedLyrics = state.lyrics.map((l) =>
-          l.trackId === trackId ? { ...l, content, updatedBy, updatedAt: now() } : l,
+          l.trackId === trackId ? updated : l,
         );
+        db.upsertLyrics(updated);
       } else {
         const newLyrics: Lyrics = {
           id: uuidv4(),
@@ -344,8 +289,10 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
           updatedAt: now(),
         };
         updatedLyrics = [...state.lyrics, newLyrics];
+        db.upsertLyrics(newLyrics);
       }
       const activityEntry = createActivityItem(updatedBy, 'save_lyrics', `Paroles mises à jour pour le morceau.`);
+      db.insertActivity(activityEntry);
       return { ...state, lyrics: updatedLyrics, activity: [...state.activity, activityEntry] };
     }
 
@@ -362,6 +309,8 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
         createdAt: now(),
       };
       const activityEntry = createActivityItem(authorId, 'add_vocal', `Vocal (${type}) ajouté.`);
+      db.insertVocal(newVocal);
+      db.insertActivity(activityEntry);
       return {
         ...state,
         vocals: [...state.vocals, newVocal],
@@ -372,6 +321,8 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
     case 'DELETE_VOCAL': {
       const { id, userId } = action.payload;
       const activityEntry = createActivityItem(userId, 'delete_vocal', `Vocal supprimé.`);
+      db.deleteVocal(id);
+      db.insertActivity(activityEntry);
       return {
         ...state,
         vocals: state.vocals.filter((v) => v.id !== id),
@@ -394,6 +345,8 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
         createdAt: now(),
       };
       const activityEntry = createActivityItem(authorId, 'add_file', `Fichier uploadé : ${name}`);
+      db.insertFile(newFile);
+      db.insertActivity(activityEntry);
       return {
         ...state,
         files: [...state.files, newFile],
@@ -405,6 +358,8 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
       const { id, userId } = action.payload;
       const file = state.files.find((f) => f.id === id);
       const activityEntry = createActivityItem(userId, 'delete_file', `Fichier supprimé : ${file?.name ?? id}`);
+      db.deleteFile(id);
+      db.insertActivity(activityEntry);
       return {
         ...state,
         files: state.files.filter((f) => f.id !== id),
@@ -423,6 +378,8 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
         createdAt: now(),
       };
       const activityEntry = createActivityItem(createdBy, 'add_folder', `Dossier créé : ${name}`);
+      db.insertFolder(newFolder);
+      db.insertActivity(activityEntry);
       return {
         ...state,
         folders: [...state.folders, newFolder],
@@ -434,6 +391,8 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
       const { id, userId } = action.payload;
       const folder = state.folders.find((f) => f.id === id);
       const activityEntry = createActivityItem(userId, 'delete_folder', `Dossier supprimé : ${folder?.name ?? id}`);
+      db.deleteFolder(id);
+      db.insertActivity(activityEntry);
       return {
         ...state,
         folders: state.folders.filter((f) => f.id !== id),
@@ -449,13 +408,14 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
       let updatedVotes: Vote[];
       if (existing) {
         if (existing.direction === direction) {
-          // Same direction – remove (toggle off)
           updatedVotes = state.votes.filter((v) => v.id !== existing.id);
+          db.deleteVote(existing.id);
         } else {
-          // Different direction – switch
+          const updated = { ...existing, direction, createdAt: now() };
           updatedVotes = state.votes.map((v) =>
-            v.id === existing.id ? { ...v, direction, createdAt: now() } : v,
+            v.id === existing.id ? updated : v,
           );
+          db.upsertVote(updated);
         }
       } else {
         const newVote: Vote = {
@@ -466,6 +426,7 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
           createdAt: now(),
         };
         updatedVotes = [...state.votes, newVote];
+        db.upsertVote(newVote);
       }
       return { ...state, votes: updatedVotes };
     }
@@ -480,6 +441,7 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
         content,
         createdAt: now(),
       };
+      db.insertMessage(newMessage);
       return { ...state, messages: [...state.messages, newMessage] };
     }
 
@@ -487,12 +449,14 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
     case 'LOG_ACTIVITY': {
       const { userId, actionType, description } = action.payload;
       const entry = createActivityItem(userId, actionType, description);
+      db.insertActivity(entry);
       return { ...state, activity: [...state.activity, entry] };
     }
 
     // ---- User management ----
     case 'UPDATE_USER': {
       const { id, ...changes } = action.payload;
+      db.updateUser(id, changes);
       const updatedUsers = state.users.map((u) => (u.id === id ? { ...u, ...changes } : u));
       const updatedCurrent =
         state.currentUser?.id === id ? { ...state.currentUser, ...changes } : state.currentUser;
@@ -500,6 +464,7 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
     }
 
     case 'UPDATE_PROJECT_SETTINGS': {
+      db.updateProjectSettings(action.payload);
       return {
         ...state,
         projectSettings: { ...state.projectSettings, ...action.payload },
@@ -527,6 +492,8 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
         'add_member',
         `${pseudo} a été ajouté au projet.`,
       );
+      db.insertUser(newUser);
+      db.insertActivity(activityEntry);
       return {
         ...state,
         users: [...state.users, newUser],
@@ -536,6 +503,7 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
 
     case 'DELETE_USER': {
       const { id } = action.payload;
+      db.deleteUser(id);
       return {
         ...state,
         users: state.users.filter((u) => u.id !== id),
@@ -552,19 +520,75 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
 // Context
 // ---------------------------------------------------------------------------
 
-const StoreContext = createContext<{ state: StoreState; dispatch: Dispatch<StoreAction> } | undefined>(undefined);
-
-export function StoreProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(storeReducer, undefined, loadState);
-
-  useEffect(() => {
-    saveState(state);
-  }, [state]);
-
-  return createElement(StoreContext.Provider, { value: { state, dispatch } }, children);
+interface StoreContextValue {
+  state: StoreState;
+  dispatch: Dispatch<StoreAction>;
+  loginAsync: (email: string, password: string) => Promise<User | null>;
 }
 
-export function useStore(): { state: StoreState; dispatch: Dispatch<StoreAction> } {
+const StoreContext = createContext<StoreContextValue | undefined>(undefined);
+
+export function StoreProvider({ children }: { children: ReactNode }) {
+  const [state, dispatch] = useReducer(storeReducer, undefined, buildInitialState);
+
+  // Load data from Supabase on mount
+  useEffect(() => {
+    let cancelled = false;
+
+    async function init() {
+      try {
+        const data = await fetchAllData();
+        if (cancelled) return;
+        dispatch({ type: 'HYDRATE', payload: data });
+
+        // Restore session
+        const session = loadSession();
+        if (session) {
+          const user = data.users.find(
+            (u) => u.email === session.email && u.password === session.password,
+          );
+          if (user) {
+            dispatch({ type: 'LOGIN_SUCCESS', payload: { user } });
+          } else {
+            clearSession();
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load data from Supabase:', err);
+        if (!cancelled) dispatch({ type: 'SET_LOADING', payload: false });
+      }
+    }
+
+    init();
+
+    // Subscribe to realtime changes – refresh data periodically
+    const unsubscribe = subscribeToChanges(async () => {
+      // On any change from another client, re-fetch
+      try {
+        const data = await fetchAllData();
+        if (!cancelled) dispatch({ type: 'HYDRATE', payload: data });
+      } catch { /* silent */ }
+    });
+
+    return () => {
+      cancelled = true;
+      unsubscribe();
+    };
+  }, []);
+
+  const loginAsync = useCallback(async (email: string, password: string): Promise<User | null> => {
+    const user = await db.findUserByCredentials(email, password);
+    if (user) {
+      saveSession(email, password);
+      dispatch({ type: 'LOGIN_SUCCESS', payload: { user } });
+    }
+    return user;
+  }, []);
+
+  return createElement(StoreContext.Provider, { value: { state, dispatch, loginAsync } }, children);
+}
+
+export function useStore(): StoreContextValue {
   const context = useContext(StoreContext);
   if (!context) {
     throw new Error('useStore must be used within a StoreProvider');

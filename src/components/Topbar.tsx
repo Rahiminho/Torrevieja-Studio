@@ -15,10 +15,11 @@ const pageTitles: Record<string, string> = {
   '/fichiers': 'Fichiers',
   '/crew': 'Crew',
   '/finale': 'Finale',
+  '/settings': 'Réglages',
 };
 
 const IconChat = (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
   </svg>
 );
@@ -33,7 +34,7 @@ export default function Topbar({ isMobile, chatOpen, onToggleChat }: TopbarProps
     <header
       className="glass-medium"
       style={{
-        height: 56,
+        height: 52,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -41,7 +42,7 @@ export default function Topbar({ isMobile, chatOpen, onToggleChat }: TopbarProps
         position: 'sticky',
         top: 0,
         zIndex: 90,
-        borderBottom: '1px solid rgba(255,210,100,0.20)',
+        borderBottom: '0.5px solid rgba(200,140,40,0.12)',
         borderTop: 'none',
         borderLeft: 'none',
         borderRight: 'none',
@@ -49,15 +50,16 @@ export default function Topbar({ isMobile, chatOpen, onToggleChat }: TopbarProps
       }}
     >
       {/* Left side */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        {isMobile && <SunLogo size={28} />}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        {isMobile && <SunLogo size={26} />}
         <h1
           style={{
             margin: 0,
-            fontSize: isMobile ? '1rem' : '1.1rem',
-            fontWeight: 700,
-            fontFamily: 'var(--font-display)',
+            fontSize: isMobile ? '0.95rem' : '1rem',
+            fontWeight: 600,
+            fontFamily: 'var(--font-body)',
             color: 'var(--color-txt)',
+            letterSpacing: '-0.02em',
           }}
         >
           {pageTitle}
@@ -65,7 +67,7 @@ export default function Topbar({ isMobile, chatOpen, onToggleChat }: TopbarProps
       </div>
 
       {/* Right side */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         {/* Chat toggle (desktop only) */}
         {!isMobile && (
           <button
@@ -75,25 +77,27 @@ export default function Topbar({ isMobile, chatOpen, onToggleChat }: TopbarProps
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: 36,
-              height: 36,
-              borderRadius: '0.625rem',
+              width: 34,
+              height: 34,
+              borderRadius: '50%',
               border: 'none',
               cursor: 'pointer',
               color: chatOpen ? 'var(--color-gold)' : 'var(--color-txt3)',
               background: chatOpen
-                ? 'rgba(200,134,10,0.12)'
-                : 'transparent',
+                ? 'rgba(200,134,10,0.10)'
+                : 'rgba(200,134,10,0.04)',
               transition: 'all 0.2s ease',
             }}
             onMouseEnter={(e) => {
               if (!chatOpen) {
-                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(200,134,10,0.06)';
+                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(200,134,10,0.08)';
+                (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-gold)';
               }
             }}
             onMouseLeave={(e) => {
               if (!chatOpen) {
-                (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(200,134,10,0.04)';
+                (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-txt3)';
               }
             }}
           >
@@ -105,17 +109,18 @@ export default function Topbar({ isMobile, chatOpen, onToggleChat }: TopbarProps
         {user && (
           <div
             style={{
-              width: 32,
-              height: 32,
+              width: 30,
+              height: 30,
               borderRadius: '50%',
               background: user.color,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '0.7rem',
+              fontSize: '0.65rem',
               fontWeight: 700,
               color: '#fff',
               flexShrink: 0,
+              boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
             }}
           >
             {user.initials}
