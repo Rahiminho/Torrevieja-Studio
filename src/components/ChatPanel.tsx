@@ -89,7 +89,7 @@ function ChatContent({ isMobile, onClose }: ChatContentProps) {
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '12px 16px',
-          borderBottom: '1px solid rgba(200,134,10,0.14)',
+          borderBottom: '1px solid rgba(0,0,0,0.06)',
           flexShrink: 0,
         }}
       >
@@ -115,7 +115,7 @@ function ChatContent({ isMobile, onClose }: ChatContentProps) {
               justifyContent: 'center',
               borderRadius: '50%',
               border: 'none',
-              background: 'rgba(200,134,10,0.08)',
+              background: 'rgba(0,0,0,0.05)',
               color: 'var(--color-txt3)',
               cursor: 'pointer',
               transition: 'background 0.2s',
@@ -136,7 +136,7 @@ function ChatContent({ isMobile, onClose }: ChatContentProps) {
           overflowX: 'auto',
           gap: 2,
           padding: '8px 12px',
-          borderBottom: '1px solid rgba(200,134,10,0.12)',
+          borderBottom: '1px solid rgba(0,0,0,0.05)',
           flexShrink: 0,
         }}
       >
@@ -155,7 +155,7 @@ function ChatContent({ isMobile, onClose }: ChatContentProps) {
               borderRadius: 8,
               whiteSpace: 'nowrap',
               transition: 'all 0.15s ease',
-              background: activeChannel === ch ? 'rgba(200,134,10,0.12)' : 'transparent',
+              background: activeChannel === ch ? 'rgba(232,160,32,0.12)' : 'transparent',
               color: activeChannel === ch ? 'var(--color-gold)' : 'var(--color-txt3)',
               borderBottom: activeChannel === ch ? '2px solid var(--color-gold)' : '2px solid transparent',
             }}
@@ -280,7 +280,7 @@ function ChatContent({ isMobile, onClose }: ChatContentProps) {
       <div
         style={{
           padding: '10px 14px',
-          borderTop: '1px solid rgba(200,134,10,0.14)',
+          borderTop: '1px solid rgba(0,0,0,0.06)',
           flexShrink: 0,
         }}
       >
@@ -306,7 +306,7 @@ function ChatContent({ isMobile, onClose }: ChatContentProps) {
               justifyContent: 'center',
               borderRadius: 10,
               border: 'none',
-              background: inputValue.trim() ? 'var(--color-gold)' : 'rgba(200,134,10,0.12)',
+              background: inputValue.trim() ? 'var(--color-gold)' : 'rgba(232,160,32,0.10)',
               color: inputValue.trim() ? '#fff' : 'var(--color-txt4)',
               cursor: inputValue.trim() ? 'pointer' : 'default',
               transition: 'all 0.2s ease',
@@ -341,9 +341,9 @@ export default function ChatPanel({ isOpen, onClose, isMobile }: ChatPanelProps)
           opacity: isOpen ? 1 : 0,
           transform: isOpen ? 'scale(1)' : 'scale(0.96)',
           pointerEvents: isOpen ? 'all' : 'none',
-          background: 'rgba(253,246,232,0.88)',
-          backdropFilter: 'blur(32px) saturate(1.7)',
-          borderTop: '1px solid rgba(200,134,10,0.18)',
+          background: 'rgba(255,255,255,0.85)',
+          backdropFilter: 'blur(40px) saturate(1.8)',
+          borderTop: '1px solid rgba(255,255,255,0.55)',
         }}
       >
         <ChatContent isMobile onClose={onClose} />
@@ -362,10 +362,10 @@ export default function ChatPanel({ isOpen, onClose, isMobile }: ChatPanelProps)
         zIndex: 40,
         display: 'flex',
         flexDirection: 'column',
-        background: 'rgba(253,246,232,0.82)',
-        backdropFilter: 'blur(32px) saturate(1.7)',
-        borderLeft: '1px solid rgba(200,134,10,0.18)',
-        boxShadow: '-4px 0 32px rgba(180,100,10,0.08)',
+        background: 'rgba(255,255,255,0.75)',
+        backdropFilter: 'blur(40px) saturate(1.8)',
+        borderLeft: '1px solid rgba(255,255,255,0.55)',
+        boxShadow: '-4px 0 32px rgba(0,0,0,0.06)',
         transition: 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
         transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
       }}

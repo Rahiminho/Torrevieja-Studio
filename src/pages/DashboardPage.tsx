@@ -86,7 +86,7 @@ export default function DashboardPage() {
       value: tracks.length,
       sub: `${inProgressCount} en cours`,
       Icon: MusicIcon,
-      color: 'rgba(200,134,10,0.12)',
+      color: 'rgba(232,160,32,0.12)',
       iconColor: 'var(--color-gold)',
     },
     {
@@ -232,7 +232,7 @@ export default function DashboardPage() {
               width: '100%',
               height: 8,
               borderRadius: 999,
-              background: 'rgba(200,134,10,0.10)',
+              background: 'rgba(0,0,0,0.05)',
               overflow: 'hidden',
             }}
           >
@@ -326,7 +326,7 @@ export default function DashboardPage() {
                       width: '100%',
                       height: 5,
                       borderRadius: 999,
-                      background: 'rgba(200,134,10,0.09)',
+                      background: 'rgba(0,0,0,0.05)',
                       overflow: 'hidden',
                     }}
                   >

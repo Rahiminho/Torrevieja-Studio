@@ -182,7 +182,7 @@ function MemberCard({ userId }: { userId: string }) {
         style={{
           width: '100%',
           paddingTop: 12,
-          borderTop: '1px solid rgba(200,134,10,0.12)',
+          borderTop: '1px solid rgba(0,0,0,0.06)',
           display: 'flex',
           flexDirection: 'column',
           gap: 8,
@@ -218,7 +218,7 @@ function MemberCard({ userId }: { userId: string }) {
             width: '100%',
             height: 6,
             borderRadius: 999,
-            background: 'rgba(200,134,10,0.10)',
+            background: 'rgba(0,0,0,0.05)',
             overflow: 'hidden',
           }}
         >
@@ -240,7 +240,7 @@ function MemberCard({ userId }: { userId: string }) {
           style={{
             width: '100%',
             paddingTop: 12,
-            borderTop: '1px solid rgba(200,134,10,0.10)',
+            borderTop: '1px solid rgba(0,0,0,0.05)',
             display: 'flex',
             flexDirection: 'column',
             gap: 8,
@@ -294,7 +294,7 @@ function MemberCard({ userId }: { userId: string }) {
                       border: 'none',
                       cursor: currentUserId ? 'pointer' : 'default',
                       fontSize: '0.9rem',
-                      background: myVote === 'up' ? 'rgba(39,174,96,0.22)' : 'rgba(200,134,10,0.07)',
+                      background: myVote === 'up' ? 'rgba(39,174,96,0.22)' : 'rgba(0,0,0,0.04)',
                       boxShadow: myVote === 'up' ? 'inset 0 0 0 1px rgba(39,174,96,0.40)' : 'none',
                       transition: 'all 0.15s ease',
                     }}
@@ -310,7 +310,7 @@ function MemberCard({ userId }: { userId: string }) {
                       border: 'none',
                       cursor: currentUserId ? 'pointer' : 'default',
                       fontSize: '0.9rem',
-                      background: myVote === 'down' ? 'rgba(231,76,60,0.22)' : 'rgba(200,134,10,0.07)',
+                      background: myVote === 'down' ? 'rgba(231,76,60,0.22)' : 'rgba(0,0,0,0.04)',
                       boxShadow: myVote === 'down' ? 'inset 0 0 0 1px rgba(231,76,60,0.40)' : 'none',
                       transition: 'all 0.15s ease',
                     }}

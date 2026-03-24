@@ -187,7 +187,7 @@ export default function FinalePage() {
             borderRadius: 16,
             overflow: 'hidden',
             cursor: 'pointer',
-            border: '2px dashed rgba(200,134,10,0.35)',
+            border: '2px dashed rgba(232,160,32,0.30)',
             background: 'none',
             padding: 0,
             transition: 'border-color 0.2s, transform 0.2s',
@@ -211,7 +211,7 @@ export default function FinalePage() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: 8,
-                background: 'linear-gradient(135deg, rgba(200,134,10,0.12), rgba(212,112,10,0.18))',
+                background: 'linear-gradient(135deg, rgba(232,160,32,0.12), rgba(232,160,32,0.18))',
                 color: 'var(--color-txt3)',
               }}
             >
@@ -271,7 +271,7 @@ export default function FinalePage() {
               fontSize: '0.95rem',
             }}
             onFocus={(e) => {
-              e.currentTarget.style.borderBottomColor = 'rgba(200,134,10,0.40)';
+              e.currentTarget.style.borderBottomColor = 'rgba(232,160,32,0.40)';
             }}
             onBlurCapture={(e) => {
               e.currentTarget.style.borderBottomColor = 'transparent';
@@ -391,7 +391,7 @@ export default function FinalePage() {
                       cursor: currentUser ? 'pointer' : 'default',
                       display: 'flex',
                       alignItems: 'center',
-                      background: userVote === 'up' ? 'rgba(34,197,94,0.18)' : 'rgba(200,134,10,0.07)',
+                      background: userVote === 'up' ? 'rgba(34,197,94,0.18)' : 'rgba(0,0,0,0.04)',
                       color: userVote === 'up' ? '#16a34a' : 'var(--color-txt4)',
                       transition: 'all 0.15s ease',
                     }}
@@ -420,7 +420,7 @@ export default function FinalePage() {
                       cursor: currentUser ? 'pointer' : 'default',
                       display: 'flex',
                       alignItems: 'center',
-                      background: userVote === 'down' ? 'rgba(239,68,68,0.18)' : 'rgba(200,134,10,0.07)',
+                      background: userVote === 'down' ? 'rgba(239,68,68,0.18)' : 'rgba(0,0,0,0.04)',
                       color: userVote === 'down' ? '#dc2626' : 'var(--color-txt4)',
                       transition: 'all 0.15s ease',
                     }}

@@ -468,7 +468,7 @@ export default function FilesPage() {
             value={newFolderName}
             onChange={(e) => setNewFolderName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleCreateFolder()}
-            className="w-full px-3 py-2 rounded-lg bg-surface2 border border-[rgba(200,134,10,0.12)] text-txt placeholder:text-txt3 focus:outline-none focus:ring-2 focus:ring-gold/50"
+            className="w-full px-3 py-2 rounded-lg bg-surface2 border border-[rgba(0,0,0,0.06)] text-txt placeholder:text-txt3 focus:outline-none focus:ring-2 focus:ring-gold/50"
             autoFocus
           />
           <div className="flex justify-end gap-2">

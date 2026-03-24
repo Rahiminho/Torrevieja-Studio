@@ -87,7 +87,7 @@ export default function Sidebar() {
         display: 'flex',
         flexDirection: 'column',
         zIndex: 100,
-        borderRight: '0.5px solid rgba(255,140,0,0.18)',
+        borderRight: '1px solid rgba(255,255,255,0.45)',
         borderTop: 'none',
         borderBottom: 'none',
         borderLeft: 'none',
@@ -121,7 +121,7 @@ export default function Sidebar() {
       </div>
 
       {/* Separator */}
-      <div style={{ height: 0.5, background: 'rgba(255,140,0,0.10)', margin: '0 16px' }} />
+      <div style={{ height: 0.5, background: 'rgba(0,0,0,0.06)', margin: '0 16px' }} />
 
       {/* Navigation */}
       <nav style={{ flex: 1, padding: '12px 12px', display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -163,7 +163,7 @@ export default function Sidebar() {
                 style={{
                   fontSize: '0.6rem',
                   color: 'var(--color-txt4)',
-                  background: 'rgba(255,122,0,0.06)',
+                  background: 'rgba(0,0,0,0.04)',
                   padding: '2px 5px',
                   borderRadius: 4,
                   transition: 'opacity 0.2s',
@@ -182,7 +182,7 @@ export default function Sidebar() {
         <div
           style={{
             padding: '14px 16px 18px',
-            borderTop: '0.5px solid rgba(255,140,0,0.10)',
+            borderTop: '1px solid rgba(0,0,0,0.06)',
             display: 'flex',
             alignItems: 'center',
             gap: 10,

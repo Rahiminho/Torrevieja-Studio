@@ -151,7 +151,7 @@ export default function AuthPage() {
               marginBottom: 24,
               borderRadius: 12,
               overflow: 'hidden',
-              background: 'rgba(200,134,10,0.07)',
+              background: 'rgba(0,0,0,0.04)',
               padding: 3,
               gap: 2,
             }}
@@ -171,9 +171,9 @@ export default function AuthPage() {
                   cursor: 'pointer',
                   borderRadius: 9,
                   transition: 'all 0.2s ease',
-                  background: tab === t ? 'rgba(253,246,232,0.95)' : 'transparent',
+                  background: tab === t ? 'rgba(255,255,255,0.90)' : 'transparent',
                   color: tab === t ? 'var(--color-gold)' : 'var(--color-txt3)',
-                  boxShadow: tab === t ? '0 1px 4px rgba(180,100,10,0.10)' : 'none',
+                  boxShadow: tab === t ? '0 1px 4px rgba(0,0,0,0.06)' : 'none',
                 }}
               >
                 {t === 'login' ? 'Connexion' : 'Créer un compte'}
@@ -352,9 +352,9 @@ export default function AuthPage() {
 
           {/* Divider */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '20px 0' }}>
-            <div style={{ flex: 1, height: 1, background: 'rgba(200,134,10,0.14)' }} />
+            <div style={{ flex: 1, height: 1, background: 'rgba(0,0,0,0.06)' }} />
             <span style={{ color: 'var(--color-txt4)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>ou</span>
-            <div style={{ flex: 1, height: 1, background: 'rgba(200,134,10,0.14)' }} />
+            <div style={{ flex: 1, height: 1, background: 'rgba(0,0,0,0.06)' }} />
           </div>
 
           {/* Demo access – always works */}

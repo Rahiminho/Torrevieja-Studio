@@ -43,7 +43,7 @@ function SectionHeader({ title }: { title: string }) {
         letterSpacing: '-0.01em',
         marginBottom: 20,
         paddingBottom: 10,
-        borderBottom: '1px solid rgba(200,134,10,0.14)',
+        borderBottom: '1px solid rgba(0,0,0,0.06)',
         fontFamily: 'var(--font-display)',
       }}
     >
@@ -241,7 +241,7 @@ export default function SettingsPage() {
                 height: 72,
                 borderRadius: '50%',
                 overflow: 'hidden',
-                border: '2px solid rgba(200,134,10,0.30)',
+                border: '2px solid rgba(232,160,32,0.25)',
                 flexShrink: 0,
                 cursor: 'pointer',
                 background: 'none',
@@ -416,7 +416,7 @@ export default function SettingsPage() {
               value={user.email}
               readOnly
               style={{
-                background: 'rgba(200,134,10,0.04)',
+                background: 'rgba(0,0,0,0.03)',
                 color: 'var(--color-txt3)',
                 cursor: 'not-allowed',
               }}

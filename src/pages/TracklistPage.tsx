@@ -218,7 +218,7 @@ export default function TracklistPage() {
       <div className="glass-card hidden md:block overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead>
-            <tr className="border-b border-[rgba(200,134,10,0.12)] text-txt2">
+            <tr className="border-b border-[rgba(0,0,0,0.06)] text-txt2">
               <th className="py-3 px-2 w-10"></th>
               <th className="py-3 px-2 w-10">#</th>
               <th className="py-3 px-2">Titre / Artistes</th>
@@ -241,7 +241,7 @@ export default function TracklistPage() {
                     onDragOver={(e) => handleDragOver(e, track.id)}
                     onDrop={handleDrop}
                     onDragEnd={handleDragEnd}
-                    className="border-b border-[rgba(200,134,10,0.08)] hover:bg-surface2 transition-colors cursor-grab active:cursor-grabbing [&.dragging]:opacity-40"
+                    className="border-b border-[rgba(0,0,0,0.04)] hover:bg-surface2 transition-colors cursor-grab active:cursor-grabbing [&.dragging]:opacity-40"
                     style={{ opacity: dragItemRef.current === track.id ? 0.4 : 1 }}
                   >
                     <td className="py-3 px-2 text-txt3 select-none">☰</td>
@@ -313,7 +313,7 @@ export default function TracklistPage() {
                                 key={vocal.id}
                                 className="flex items-center gap-3 flex-wrap bg-surface2 rounded-lg p-2"
                               >
-                                <span className="text-xs px-2 py-0.5 rounded-full bg-[rgba(200,134,10,0.15)] text-gold font-medium">
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-[rgba(232,160,32,0.15)] text-gold font-medium">
                                   {vocal.type}
                                 </span>
                                 <span className="text-xs text-txt2">
@@ -437,7 +437,7 @@ export default function TracklistPage() {
 
                   {/* Expanded vocals */}
                   {isExpanded && trackVocals.length > 0 && (
-                    <div className="mt-3 space-y-2 border-t border-[rgba(200,134,10,0.12)] pt-3">
+                    <div className="mt-3 space-y-2 border-t border-[rgba(0,0,0,0.06)] pt-3">
                       <div className="text-xs font-semibold text-txt2">
                         Vocals ({trackVocals.length})
                       </div>
@@ -449,7 +449,7 @@ export default function TracklistPage() {
                             className="bg-surface2 rounded-lg p-2 space-y-1"
                           >
                             <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-xs px-2 py-0.5 rounded-full bg-[rgba(200,134,10,0.15)] text-gold font-medium">
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-[rgba(232,160,32,0.15)] text-gold font-medium">
                                 {vocal.type}
                               </span>
                               <span className="text-xs text-txt2">
@@ -547,7 +547,7 @@ export default function TracklistPage() {
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-colors ${
                       selected
                         ? 'bg-gold text-white font-medium'
-                        : 'bg-surface3 text-txt2 hover:bg-[rgba(200,134,10,0.15)]'
+                        : 'bg-surface3 text-txt2 hover:bg-[rgba(232,160,32,0.15)]'
                     }`}
                   >
                     <span

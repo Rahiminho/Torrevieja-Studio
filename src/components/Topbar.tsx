@@ -42,7 +42,7 @@ export default function Topbar({ isMobile, chatOpen, onToggleChat }: TopbarProps
         position: 'sticky',
         top: 0,
         zIndex: 90,
-        borderBottom: '0.5px solid rgba(255,140,0,0.12)',
+        borderBottom: '1px solid rgba(255,255,255,0.45)',
         borderTop: 'none',
         borderLeft: 'none',
         borderRight: 'none',
@@ -77,7 +77,7 @@ export default function Topbar({ isMobile, chatOpen, onToggleChat }: TopbarProps
             style={{
               width: 34,
               height: 34,
-              ...(chatOpen ? { color: 'var(--color-gold)', background: 'rgba(200,134,10,0.10)' } : {}),
+              ...(chatOpen ? { color: 'var(--color-gold)', background: 'rgba(232,160,32,0.12)' } : {}),
             }}
           >
             {IconChat}

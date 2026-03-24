@@ -84,7 +84,7 @@ export default function BottomNav() {
         borderLeft: 'none',
         borderRight: 'none',
         borderBottom: 'none',
-        borderTop: '0.5px solid rgba(255,140,0,0.15)',
+        borderTop: '1px solid rgba(255,255,255,0.45)',
       }}
     >
       {tabs.map((tab) => {
