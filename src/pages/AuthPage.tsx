@@ -75,33 +75,6 @@ export default function AuthPage() {
     });
   }
 
-  async function handleDemo() {
-    setLoading(true);
-    // Try the known demo credentials first
-    let user = await loginAsync('demo@torrevieja.studio', 'demo123');
-    if (!user) {
-      // Fallback: use the first user in state
-      const first = state.users[0];
-      if (first) {
-        user = await loginAsync(first.email, first.password);
-      }
-    }
-    if (!user) {
-      // Last resort: create a demo user inline and login
-      dispatch({
-        type: 'REGISTER',
-        payload: {
-          prenom: 'Demo',
-          pseudo: 'DemoUser',
-          email: 'demo@torrevieja.studio',
-          password: 'demo123',
-          role: 'Rappeur',
-        },
-      });
-    }
-    setLoading(false);
-  }
-
   function switchTab(newTab: AuthTab) {
     setTab(newTab);
     setError('');
@@ -350,33 +323,6 @@ export default function AuthPage() {
             </form>
           )}
 
-          {/* Divider */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '20px 0' }}>
-            <div style={{ flex: 1, height: 1, background: 'rgba(0,0,0,0.06)' }} />
-            <span style={{ color: 'var(--color-txt4)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>ou</span>
-            <div style={{ flex: 1, height: 1, background: 'rgba(0,0,0,0.06)' }} />
-          </div>
-
-          {/* Demo access – always works */}
-          <button
-            type="button"
-            onClick={handleDemo}
-            className="btn-outline w-full"
-            disabled={loading}
-          >
-            {loading ? 'Chargement...' : 'Accès démo'}
-          </button>
-
-          <p
-            style={{
-              textAlign: 'center',
-              marginTop: 10,
-              fontSize: '0.72rem',
-              color: 'var(--color-txt4)',
-            }}
-          >
-            demo@torrevieja.studio · demo123
-          </p>
         </div>
       </div>
     </div>

@@ -1,5 +1,4 @@
-import { supabase, supabaseMissing } from './supabase';
-import { localDB, fetchAllLocalData, subscribeToLocalChanges } from './localDB';
+import { supabase } from './supabase';
 import type {
   User,
   Track,
@@ -140,10 +139,6 @@ function rowToSettings(r: Record<string, unknown>): ProjectSettings {
 // ---------------------------------------------------------------------------
 
 export async function fetchAllData() {
-  if (supabaseMissing) {
-    return fetchAllLocalData();
-  }
-
   const [users, tracks, lyrics, vocals, files, folders, votes, messages, activity, settings] =
     await Promise.all([
       supabase.from('users').select('*'),
@@ -178,13 +173,12 @@ export async function fetchAllData() {
 }
 
 // ---------------------------------------------------------------------------
-// Write operations – routes to localDB when Supabase is missing
+// Write operations
 // ---------------------------------------------------------------------------
 
 export const db = {
   // ---- Users ----
   async insertUser(user: User) {
-    if (supabaseMissing) { await localDB.insertUser(user); return; }
     const { error } = await supabase.from('users').insert({
       id: user.id,
       prenom: user.prenom,
@@ -201,7 +195,6 @@ export const db = {
   },
 
   async updateUser(id: string, changes: Partial<User>) {
-    if (supabaseMissing) { await localDB.updateUser(id, changes); return; }
     const mapped: Record<string, unknown> = {};
     if (changes.prenom !== undefined) mapped.prenom = changes.prenom;
     if (changes.pseudo !== undefined) mapped.pseudo = changes.pseudo;
@@ -217,15 +210,11 @@ export const db = {
   },
 
   async deleteUser(id: string) {
-    if (supabaseMissing) { await localDB.deleteUser(id); return; }
     const { error } = await supabase.from('users').delete().eq('id', id);
     if (error) console.error('deleteUser error:', error);
   },
 
   async findUserByCredentials(email: string, password: string): Promise<User | null> {
-    if (supabaseMissing) {
-      return localDB.findUserByCredentials(email, password);
-    }
     const { data } = await supabase
       .from('users')
       .select('*')
@@ -237,7 +226,6 @@ export const db = {
 
   // ---- Tracks ----
   async insertTrack(track: Track) {
-    if (supabaseMissing) { await localDB.insertTrack(track); return; }
     const { error } = await supabase.from('tracks').insert({
       id: track.id,
       title: track.title,
@@ -255,7 +243,6 @@ export const db = {
   },
 
   async updateTrack(id: string, changes: Partial<Track>) {
-    if (supabaseMissing) { await localDB.updateTrack(id, changes); return; }
     const mapped: Record<string, unknown> = {};
     if (changes.title !== undefined) mapped.title = changes.title;
     if (changes.artistIds !== undefined) mapped.artist_ids = changes.artistIds;
@@ -271,13 +258,11 @@ export const db = {
   },
 
   async deleteTrack(id: string) {
-    if (supabaseMissing) { await localDB.deleteTrack(id); return; }
     const { error } = await supabase.from('tracks').delete().eq('id', id);
     if (error) console.error('deleteTrack error:', error);
   },
 
   async reorderTracks(orderedIds: string[]) {
-    if (supabaseMissing) { await localDB.reorderTracks(orderedIds); return; }
     const updates = orderedIds.map((id, i) =>
       supabase.from('tracks').update({ position: i }).eq('id', id),
     );
@@ -286,7 +271,6 @@ export const db = {
 
   // ---- Lyrics ----
   async upsertLyrics(lyrics: Lyrics) {
-    if (supabaseMissing) { await localDB.upsertLyrics(lyrics); return; }
     const { error } = await supabase.from('lyrics').upsert({
       id: lyrics.id,
       track_id: lyrics.trackId,
@@ -299,7 +283,6 @@ export const db = {
 
   // ---- Vocals ----
   async insertVocal(vocal: Vocal) {
-    if (supabaseMissing) { await localDB.insertVocal(); return; }
     const { error } = await supabase.from('vocals').insert({
       id: vocal.id,
       track_id: vocal.trackId,
@@ -312,14 +295,12 @@ export const db = {
   },
 
   async deleteVocal(id: string) {
-    if (supabaseMissing) { await localDB.deleteVocal(); return; }
     const { error } = await supabase.from('vocals').delete().eq('id', id);
     if (error) console.error('deleteVocal error:', error);
   },
 
   // ---- Files ----
   async insertFile(file: FileItem) {
-    if (supabaseMissing) { await localDB.insertFile(file); return; }
     const { error } = await supabase.from('files').insert({
       id: file.id,
       name: file.name,
@@ -334,14 +315,12 @@ export const db = {
   },
 
   async deleteFile(id: string) {
-    if (supabaseMissing) { await localDB.deleteFile(id); return; }
     const { error } = await supabase.from('files').delete().eq('id', id);
     if (error) console.error('deleteFile error:', error);
   },
 
   // ---- Folders ----
   async insertFolder(folder: Folder) {
-    if (supabaseMissing) { await localDB.insertFolder(folder); return; }
     const { error } = await supabase.from('folders').insert({
       id: folder.id,
       name: folder.name,
@@ -352,7 +331,6 @@ export const db = {
   },
 
   async deleteFolder(id: string) {
-    if (supabaseMissing) { await localDB.deleteFolder(id); return; }
     // Move files out of this folder first
     await supabase.from('files').update({ folder_id: null }).eq('folder_id', id);
     const { error } = await supabase.from('folders').delete().eq('id', id);
@@ -361,7 +339,6 @@ export const db = {
 
   // ---- Votes ----
   async upsertVote(vote: Vote) {
-    if (supabaseMissing) { await localDB.upsertVote(vote); return; }
     const { error } = await supabase.from('votes').upsert({
       id: vote.id,
       track_id: vote.trackId,
@@ -372,14 +349,12 @@ export const db = {
   },
 
   async deleteVote(id: string) {
-    if (supabaseMissing) { await localDB.deleteVote(id); return; }
     const { error } = await supabase.from('votes').delete().eq('id', id);
     if (error) console.error('deleteVote error:', error);
   },
 
   // ---- Messages ----
   async insertMessage(msg: ChatMessage) {
-    if (supabaseMissing) { await localDB.insertMessage(msg); return; }
     const { error } = await supabase.from('messages').insert({
       id: msg.id,
       channel: msg.channel,
@@ -391,7 +366,6 @@ export const db = {
 
   // ---- Activity ----
   async insertActivity(item: ActivityItem) {
-    if (supabaseMissing) { await localDB.insertActivity(item); return; }
     const { error } = await supabase.from('activity').insert({
       id: item.id,
       user_id: item.userId,
@@ -403,7 +377,6 @@ export const db = {
 
   // ---- Project Settings ----
   async updateProjectSettings(settings: Partial<ProjectSettings>) {
-    if (supabaseMissing) { await localDB.updateProjectSettings(settings); return; }
     const mapped: Record<string, unknown> = {};
     if (settings.mixtapeName !== undefined) mapped.mixtape_name = settings.mixtapeName;
     if (settings.subtitle !== undefined) mapped.subtitle = settings.subtitle;
@@ -425,13 +398,6 @@ export const db = {
 export type RealtimeCallback = (table: string, eventType: 'INSERT' | 'UPDATE' | 'DELETE', row: Record<string, unknown>) => void;
 
 export function subscribeToChanges(callback: RealtimeCallback) {
-  if (supabaseMissing) {
-    // Use local storage cross-tab sync
-    return subscribeToLocalChanges(() => {
-      callback('local', 'INSERT', {});
-    });
-  }
-
   const channel = supabase
     .channel('studio-realtime')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'tracks' }, (payload) =>
