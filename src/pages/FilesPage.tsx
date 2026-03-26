@@ -170,7 +170,16 @@ export default function FilesPage() {
 
   const folderFileCount = (folderId: string) => files.filter((f) => f.folderId === folderId).length;
 
-  // ---- File processing (upload to Supabase Storage) ----
+  // ---- Read file as base64 (fallback) ----
+  const readFileAsDataUrl = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+  // ---- File processing (Storage with base64 fallback) ----
   const processFiles = useCallback(
     async (fileList: FileList | File[]) => {
       if (!currentUser) return;
@@ -186,25 +195,28 @@ export default function FilesPage() {
         const category = categorizeExtension(ext);
         const storagePath = `${currentUser.id}/${Date.now()}-${file.name}`;
 
+        let fileUrl: string;
         try {
-          const publicUrl = await uploadFileToStorage(file, storagePath);
-          setUploadProgress(((i + 1) / arr.length) * 100);
-
-          dispatch({
-            type: 'ADD_FILE',
-            payload: {
-              name: file.name,
-              category,
-              extension: ext,
-              sizeBytes: file.size,
-              authorId: currentUser.id,
-              folderId: currentFolderId,
-              dataUrl: publicUrl,
-            },
-          });
-        } catch (err) {
-          console.error(`Failed to upload ${file.name}:`, err);
+          fileUrl = await uploadFileToStorage(file, storagePath);
+        } catch {
+          // Fallback: read as base64 data URL
+          fileUrl = await readFileAsDataUrl(file);
         }
+
+        setUploadProgress(((i + 1) / arr.length) * 100);
+
+        dispatch({
+          type: 'ADD_FILE',
+          payload: {
+            name: file.name,
+            category,
+            extension: ext,
+            sizeBytes: file.size,
+            authorId: currentUser.id,
+            folderId: currentFolderId,
+            dataUrl: fileUrl,
+          },
+        });
       }
 
       setTimeout(() => {
