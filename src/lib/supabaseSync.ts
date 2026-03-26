@@ -173,6 +173,45 @@ export async function fetchAllData() {
 }
 
 // ---------------------------------------------------------------------------
+// Supabase Storage helpers
+// ---------------------------------------------------------------------------
+
+const STORAGE_BUCKET = 'studio-files';
+
+async function ensureBucket() {
+  // Try to create the bucket; ignore error if it already exists
+  await supabase.storage.createBucket(STORAGE_BUCKET, { public: true });
+}
+
+let bucketReady = false;
+
+export async function uploadFileToStorage(file: File, filePath: string): Promise<string> {
+  if (!bucketReady) {
+    await ensureBucket();
+    bucketReady = true;
+  }
+
+  const { error } = await supabase.storage
+    .from(STORAGE_BUCKET)
+    .upload(filePath, file, { upsert: true });
+
+  if (error) {
+    console.error('Storage upload error:', error);
+    throw error;
+  }
+
+  const { data } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(filePath);
+  return data.publicUrl;
+}
+
+export async function deleteFileFromStorage(filePath: string) {
+  const { error } = await supabase.storage
+    .from(STORAGE_BUCKET)
+    .remove([filePath]);
+  if (error) console.error('Storage delete error:', error);
+}
+
+// ---------------------------------------------------------------------------
 // Write operations
 // ---------------------------------------------------------------------------
 

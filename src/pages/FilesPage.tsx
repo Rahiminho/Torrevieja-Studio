@@ -1,6 +1,8 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { useStore } from '../store';
 import Modal from '../components/Modal';
+import FilePreview from '../components/FilePreview';
+import { uploadFileToStorage } from '../lib/supabaseSync';
 import type { FileItem } from '../types';
 
 // ---------------------------------------------------------------------------
@@ -140,6 +142,7 @@ export default function FilesPage() {
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [previewFile, setPreviewFile] = useState<FileItem | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -167,39 +170,26 @@ export default function FilesPage() {
 
   const folderFileCount = (folderId: string) => files.filter((f) => f.folderId === folderId).length;
 
-  // ---- Upload simulation ----
-  const simulateUploadProgress = useCallback(() => {
-    setUploading(true);
-    setUploadProgress(0);
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += Math.random() * 25 + 10;
-      if (progress >= 100) {
-        progress = 100;
-        clearInterval(interval);
-        setTimeout(() => {
-          setUploading(false);
-          setUploadProgress(0);
-        }, 400);
-      }
-      setUploadProgress(Math.min(progress, 100));
-    }, 150);
-  }, []);
-
-  // ---- File processing ----
+  // ---- File processing (upload to Supabase Storage) ----
   const processFiles = useCallback(
-    (fileList: FileList | File[]) => {
+    async (fileList: FileList | File[]) => {
       if (!currentUser) return;
       const arr = Array.from(fileList);
       if (arr.length === 0) return;
 
-      simulateUploadProgress();
+      setUploading(true);
+      setUploadProgress(0);
 
-      arr.forEach((file) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const ext = getExtension(file.name);
-          const category = categorizeExtension(ext);
+      for (let i = 0; i < arr.length; i++) {
+        const file = arr[i];
+        const ext = getExtension(file.name);
+        const category = categorizeExtension(ext);
+        const storagePath = `${currentUser.id}/${Date.now()}-${file.name}`;
+
+        try {
+          const publicUrl = await uploadFileToStorage(file, storagePath);
+          setUploadProgress(((i + 1) / arr.length) * 100);
+
           dispatch({
             type: 'ADD_FILE',
             payload: {
@@ -209,14 +199,20 @@ export default function FilesPage() {
               sizeBytes: file.size,
               authorId: currentUser.id,
               folderId: currentFolderId,
-              dataUrl: reader.result as string,
+              dataUrl: publicUrl,
             },
           });
-        };
-        reader.readAsDataURL(file);
-      });
+        } catch (err) {
+          console.error(`Failed to upload ${file.name}:`, err);
+        }
+      }
+
+      setTimeout(() => {
+        setUploading(false);
+        setUploadProgress(0);
+      }, 400);
     },
-    [currentUser, currentFolderId, dispatch, simulateUploadProgress],
+    [currentUser, currentFolderId, dispatch],
   );
 
   // ---- Drag & drop handlers ----
@@ -272,17 +268,9 @@ export default function FilesPage() {
     dispatch({ type: 'DELETE_FILE', payload: { id: fileId, userId: currentUser.id } });
   };
 
-  // ---- Open file ----
+  // ---- Open file (preview modal) ----
   const handleOpenFile = (file: FileItem) => {
-    if (file.dataUrl) {
-      const link = document.createElement('a');
-      link.href = file.dataUrl;
-      link.download = file.name;
-      link.target = '_blank';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+    setPreviewFile(file);
   };
 
   return (
@@ -457,6 +445,11 @@ export default function FilesPage() {
             <p className="text-sm">Uploadez des fichiers ou créez un dossier pour commencer.</p>
           </div>
         )
+      )}
+
+      {/* ---- File preview modal ---- */}
+      {previewFile && (
+        <FilePreview file={previewFile} onClose={() => setPreviewFile(null)} />
       )}
 
       {/* ---- New folder modal ---- */}
