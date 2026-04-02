@@ -567,9 +567,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       } catch { /* silent */ }
     });
 
+    // Keep-alive: ping Supabase every 4 min to prevent free-tier pause
+    const keepAlive = setInterval(() => {
+      supabase.from('project_settings').select('id').limit(1).single().then(() => {}, () => {});
+    }, 4 * 60 * 1000);
+
     return () => {
       cancelled = true;
       unsubscribe();
+      clearInterval(keepAlive);
     };
   }, []);
 
