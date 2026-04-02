@@ -601,22 +601,28 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     };
 
     // Persist to Supabase first
-    const { error } = await supabase.from('users').insert({
-      id: newUser.id,
-      prenom: newUser.prenom,
-      pseudo: newUser.pseudo,
-      email: newUser.email,
-      password_hash: newUser.password,
-      role: newUser.role,
-      bio: newUser.bio,
-      photo_url: newUser.photoUrl,
-      color: newUser.color,
-      initials: newUser.initials,
-    });
+    try {
+      const { error } = await supabase.from('users').insert({
+        id: newUser.id,
+        prenom: newUser.prenom,
+        pseudo: newUser.pseudo,
+        email: newUser.email,
+        password_hash: newUser.password,
+        role: newUser.role,
+        bio: newUser.bio,
+        photo_url: newUser.photoUrl,
+        color: newUser.color,
+        initials: newUser.initials,
+      });
 
-    if (error) {
-      console.error('Register insertUser error:', error);
-      return { user: null, error: `${error.message} (${error.code})` };
+      if (error) {
+        console.error('Register insertUser error:', error);
+        return { user: null, error: `${error.message} (${error.code})` };
+      }
+    } catch (err) {
+      console.error('Register network error:', err);
+      const msg = err instanceof Error ? err.toString() : 'Erreur réseau';
+      return { user: null, error: `${msg} — Vérifie que ton projet Supabase n'est pas en pause.` };
     }
 
     // Supabase insert succeeded — update local state
