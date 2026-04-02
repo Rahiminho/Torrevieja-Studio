@@ -520,7 +520,7 @@ interface StoreContextValue {
   state: StoreState;
   dispatch: Dispatch<StoreAction>;
   loginAsync: (email: string, password: string) => Promise<User | null>;
-  registerAsync: (payload: { prenom: string; pseudo: string; email: string; password: string; role: Role; bio?: string }) => Promise<User | null>;
+  registerAsync: (payload: { prenom: string; pseudo: string; email: string; password: string; role: Role; bio?: string }) => Promise<{ user: User | null; error?: string }>;
 }
 
 const StoreContext = createContext<StoreContextValue | undefined>(undefined);
@@ -582,7 +582,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return user;
   }, []);
 
-  const registerAsync = useCallback(async (payload: { prenom: string; pseudo: string; email: string; password: string; role: Role; bio?: string }): Promise<User | null> => {
+  const registerAsync = useCallback(async (payload: { prenom: string; pseudo: string; email: string; password: string; role: Role; bio?: string }): Promise<{ user: User | null; error?: string }> => {
     const { prenom, pseudo, email, password, role, bio } = payload;
 
     // Build user object
@@ -616,7 +616,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
     if (error) {
       console.error('Register insertUser error:', error);
-      return null;
+      return { user: null, error: `${error.message} (${error.code})` };
     }
 
     // Supabase insert succeeded — update local state
@@ -625,7 +625,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     saveSession(email, password);
     dispatch({ type: 'LOGIN_SUCCESS', payload: { user: newUser } });
 
-    return newUser;
+    return { user: newUser };
   }, []);
 
   return createElement(StoreContext.Provider, { value: { state, dispatch, loginAsync, registerAsync } }, children);

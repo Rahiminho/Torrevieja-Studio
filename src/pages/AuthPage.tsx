@@ -63,7 +63,7 @@ export default function AuthPage() {
     }
 
     setLoading(true);
-    const user = await registerAsync({
+    const result = await registerAsync({
       prenom: regPrenom,
       pseudo: regPseudo,
       email: regEmail,
@@ -73,8 +73,8 @@ export default function AuthPage() {
     });
     setLoading(false);
 
-    if (!user) {
-      setError('Erreur lors de la création du compte. Réessayez.');
+    if (!result.user) {
+      setError(result.error ? `Erreur : ${result.error}` : 'Erreur lors de la création du compte. Réessayez.');
     }
   }
 
