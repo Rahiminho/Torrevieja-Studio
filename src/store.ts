@@ -19,6 +19,7 @@ import type {
   ChatChannel,
 } from './types';
 import { fetchAllData, db, subscribeToChanges } from './lib/supabaseSync';
+import { supabase } from './lib/supabase';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -194,16 +195,11 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
         initials: computeInitials(pseudo),
         createdAt: now(),
       };
-      const activityEntry = createActivityItem(newUser.id, 'register', `${pseudo} a rejoint le studio.`);
-      // Async: persist to Supabase
-      db.insertUser(newUser);
-      db.insertActivity(activityEntry);
-      saveSession(email, password);
+      // State updated optimistically; Supabase insert handled by registerAsync
       return {
         ...state,
         currentUser: newUser,
         users: [...state.users, newUser],
-        activity: [...state.activity, activityEntry],
       };
     }
 
@@ -524,6 +520,7 @@ interface StoreContextValue {
   state: StoreState;
   dispatch: Dispatch<StoreAction>;
   loginAsync: (email: string, password: string) => Promise<User | null>;
+  registerAsync: (payload: { prenom: string; pseudo: string; email: string; password: string; role: Role; bio?: string }) => Promise<User | null>;
 }
 
 const StoreContext = createContext<StoreContextValue | undefined>(undefined);
@@ -585,7 +582,53 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return user;
   }, []);
 
-  return createElement(StoreContext.Provider, { value: { state, dispatch, loginAsync } }, children);
+  const registerAsync = useCallback(async (payload: { prenom: string; pseudo: string; email: string; password: string; role: Role; bio?: string }): Promise<User | null> => {
+    const { prenom, pseudo, email, password, role, bio } = payload;
+
+    // Build user object
+    const newUser: User = {
+      id: uuidv4(),
+      prenom,
+      pseudo,
+      email,
+      password,
+      role,
+      bio: bio ?? '',
+      photoUrl: '',
+      color: generatePastelColor(),
+      initials: computeInitials(pseudo),
+      createdAt: now(),
+    };
+
+    // Persist to Supabase first
+    const { error } = await supabase.from('users').insert({
+      id: newUser.id,
+      prenom: newUser.prenom,
+      pseudo: newUser.pseudo,
+      email: newUser.email,
+      password_hash: newUser.password,
+      role: newUser.role,
+      bio: newUser.bio,
+      photo_url: newUser.photoUrl,
+      color: newUser.color,
+      initials: newUser.initials,
+    });
+
+    if (error) {
+      console.error('Register insertUser error:', error);
+      return null;
+    }
+
+    // Supabase insert succeeded — update local state
+    const activityEntry = createActivityItem(newUser.id, 'register', `${pseudo} a rejoint le studio.`);
+    db.insertActivity(activityEntry);
+    saveSession(email, password);
+    dispatch({ type: 'LOGIN_SUCCESS', payload: { user: newUser } });
+
+    return newUser;
+  }, []);
+
+  return createElement(StoreContext.Provider, { value: { state, dispatch, loginAsync, registerAsync } }, children);
 }
 
 export function useStore(): StoreContextValue {

@@ -8,7 +8,7 @@ type AuthTab = 'login' | 'register';
 const ROLES: Role[] = ['Rappeur', 'Beatmaker', 'Chanteur', 'Mixeur', 'DA', 'Multi'];
 
 export default function AuthPage() {
-  const { state, dispatch, loginAsync } = useStore();
+  const { state, loginAsync, registerAsync } = useStore();
   const [tab, setTab] = useState<AuthTab>('login');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -43,7 +43,7 @@ export default function AuthPage() {
     }
   }
 
-  function handleRegister(e: React.FormEvent) {
+  async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
     setError('');
 
@@ -62,17 +62,20 @@ export default function AuthPage() {
       return;
     }
 
-    dispatch({
-      type: 'REGISTER',
-      payload: {
-        prenom: regPrenom,
-        pseudo: regPseudo,
-        email: regEmail,
-        password: regPassword,
-        role: regRole,
-        bio: regBio || undefined,
-      },
+    setLoading(true);
+    const user = await registerAsync({
+      prenom: regPrenom,
+      pseudo: regPseudo,
+      email: regEmail,
+      password: regPassword,
+      role: regRole,
+      bio: regBio || undefined,
     });
+    setLoading(false);
+
+    if (!user) {
+      setError('Erreur lors de la création du compte. Réessayez.');
+    }
   }
 
   function switchTab(newTab: AuthTab) {
@@ -317,8 +320,8 @@ export default function AuthPage() {
                   style={{ resize: 'none' }}
                 />
               </div>
-              <button type="submit" className="btn-gold w-full">
-                Créer un compte
+              <button type="submit" className="btn-gold w-full" disabled={loading}>
+                {loading ? 'Création...' : 'Créer un compte'}
               </button>
             </form>
           )}
