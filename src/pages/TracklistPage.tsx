@@ -222,7 +222,6 @@ export default function TracklistPage() {
               <th className="py-3 px-2 w-10"></th>
               <th className="py-3 px-2 w-10">#</th>
               <th className="py-3 px-2">Titre / Artistes</th>
-              <th className="py-3 px-2">Prod</th>
               <th className="py-3 px-2">Statut</th>
               <th className="py-3 px-2">Durée</th>
               <th className="py-3 px-2 text-right">Actions</th>
@@ -253,7 +252,6 @@ export default function TracklistPage() {
                         {track.extraArtists ? ` ${track.extraArtists}` : ''}
                       </div>
                     </td>
-                    <td className="py-3 px-2 text-txt2">{track.prod || '—'}</td>
                     <td className="py-3 px-2">
                       <span className={`${statusPillClass(track.status)} text-xs px-2 py-0.5 rounded-full`}>
                         {track.status}
@@ -396,11 +394,9 @@ export default function TracklistPage() {
                     {resolveArtistNames(track.artistIds)}
                     {track.extraArtists ? ` ${track.extraArtists}` : ''}
                   </div>
-                  <div className="text-xs text-txt3 mt-0.5">
-                    {track.prod && <>Prod: {track.prod}</>}
-                    {track.prod && track.duration && <> &middot; </>}
-                    {track.duration && <>{track.duration}</>}
-                  </div>
+                  {track.duration && (
+                    <div className="text-xs text-txt3 mt-0.5">{track.duration}</div>
+                  )}
 
                   {/* Actions row */}
                   <div className="flex items-center gap-1 mt-2">
@@ -574,18 +570,6 @@ export default function TracklistPage() {
               onChange={(e) =>
                 setForm((f) => ({ ...f, extraArtists: e.target.value }))
               }
-            />
-          </div>
-
-          {/* Prod / Beatmaker */}
-          <div>
-            <label className="block text-xs text-txt2 mb-1">Beatmaker / Prod</label>
-            <input
-              type="text"
-              className="input-field w-full"
-              placeholder="Nom du producteur"
-              value={form.prod}
-              onChange={(e) => setForm((f) => ({ ...f, prod: e.target.value }))}
             />
           </div>
 

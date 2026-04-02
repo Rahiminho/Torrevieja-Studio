@@ -1,7 +1,6 @@
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { useStore } from '../store';
-import Modal from '../components/Modal';
-import type { Role, VoteDirection } from '../types';
+import type { VoteDirection } from '../types';
 
 // ---------------------------------------------------------------------------
 // Reputation helpers
@@ -14,10 +13,9 @@ interface ReputationLevel {
 
 function getReputationLevel(score: number): ReputationLevel {
   if (score <= -4) return { label: 'Rappeur de merde', color: '#C0392B' };
-  if (score <= -3) return { label: 'Exécrable', color: '#E74C3C' };
   if (score <= -2) return { label: 'Exécrable', color: '#E74C3C' };
   if (score <= -1) return { label: 'Minable', color: '#E67E22' };
-  if (score <= 0)  return { label: 'Minable', color: '#E67E22' };
+  if (score === 0)  return { label: 'Nouveau', color: '#7F8C8D' };
   if (score <= 2)  return { label: 'Nabot', color: '#D4AC0D' };
   if (score <= 4)  return { label: 'Débutant', color: '#B8960C' };
   if (score <= 7)  return { label: 'Rajel', color: '#27AE60' };
@@ -33,12 +31,6 @@ function scoreToProgress(score: number): number {
   const clamped = Math.max(-6, Math.min(10, score));
   return Math.round(((clamped + 6) / 16) * 100);
 }
-
-// ---------------------------------------------------------------------------
-// Roles
-// ---------------------------------------------------------------------------
-
-const ROLES: Role[] = ['Rappeur', 'Beatmaker', 'Chanteur', 'Mixeur', 'DA', 'Multi'];
 
 // ---------------------------------------------------------------------------
 // MemberCard
@@ -332,70 +324,26 @@ function MemberCard({ userId }: { userId: string }) {
 // ---------------------------------------------------------------------------
 
 export default function CrewPage() {
-  const { state, dispatch } = useStore();
-  const [modalOpen, setModalOpen] = useState(false);
-
-  const [formPrenom, setFormPrenom] = useState('');
-  const [formPseudo, setFormPseudo] = useState('');
-  const [formEmail, setFormEmail] = useState('');
-  const [formRole, setFormRole] = useState<Role>('Rappeur');
-  const [formBio, setFormBio] = useState('');
-
-  const resetForm = () => {
-    setFormPrenom('');
-    setFormPseudo('');
-    setFormEmail('');
-    setFormRole('Rappeur');
-    setFormBio('');
-  };
-
-  const handleAddMember = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formPseudo.trim() || !formEmail.trim()) return;
-    dispatch({
-      type: 'ADD_MEMBER',
-      payload: {
-        prenom: formPrenom.trim(),
-        pseudo: formPseudo.trim(),
-        email: formEmail.trim(),
-        password: 'default123',
-        role: formRole,
-        bio: formBio.trim() || undefined,
-      },
-    });
-    resetForm();
-    setModalOpen(false);
-  };
+  const { state } = useStore();
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div>
-          <h1
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: '1.6rem',
-              fontWeight: 700,
-              color: 'var(--color-txt)',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            Le Crew
-          </h1>
-          <p style={{ fontSize: '0.85rem', color: 'var(--color-txt3)', marginTop: 3 }}>
-            {state.users.length} membre{state.users.length !== 1 ? 's' : ''}
-          </p>
-        </div>
-        <button
-          type="button"
-          className="btn-gold"
-          onClick={() => setModalOpen(true)}
-          style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+      <div>
+        <h1
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: '1.6rem',
+            fontWeight: 700,
+            color: 'var(--color-txt)',
+            letterSpacing: '-0.02em',
+          }}
         >
-          <span style={{ fontSize: '1.1rem', lineHeight: 1 }}>+</span>
-          Inviter
-        </button>
+          Le Crew
+        </h1>
+        <p style={{ fontSize: '0.85rem', color: 'var(--color-txt3)', marginTop: 3 }}>
+          {state.users.length} membre{state.users.length !== 1 ? 's' : ''} inscrit{state.users.length !== 1 ? 's' : ''}
+        </p>
       </div>
 
       {/* Members grid */}
@@ -405,14 +353,7 @@ export default function CrewPage() {
           style={{ padding: '40px 20px', textAlign: 'center', color: 'var(--color-txt3)' }}
         >
           <p style={{ fontSize: '0.9rem' }}>Aucun membre pour le moment.</p>
-          <button
-            type="button"
-            className="btn-gold"
-            style={{ marginTop: 16 }}
-            onClick={() => setModalOpen(true)}
-          >
-            + Inviter le premier membre
-          </button>
+          <p style={{ fontSize: '0.8rem', marginTop: 8 }}>Les membres apparaîtront ici dès qu'ils s'inscriront.</p>
         </div>
       ) : (
         <div
@@ -427,97 +368,6 @@ export default function CrewPage() {
           ))}
         </div>
       )}
-
-      {/* Add Member Modal */}
-      <Modal isOpen={modalOpen} onClose={() => { setModalOpen(false); resetForm(); }} title="Inviter un membre">
-        <form onSubmit={handleAddMember} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 5, fontWeight: 500 }}>
-              Prénom
-            </label>
-            <input
-              type="text"
-              className="input-field"
-              value={formPrenom}
-              onChange={(e) => setFormPrenom(e.target.value)}
-              placeholder="Prénom"
-            />
-          </div>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 5, fontWeight: 500 }}>
-              Pseudo *
-            </label>
-            <input
-              type="text"
-              className="input-field"
-              value={formPseudo}
-              onChange={(e) => setFormPseudo(e.target.value)}
-              placeholder="Nom d'artiste"
-              required
-            />
-          </div>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 5, fontWeight: 500 }}>
-              Email *
-            </label>
-            <input
-              type="email"
-              className="input-field"
-              value={formEmail}
-              onChange={(e) => setFormEmail(e.target.value)}
-              placeholder="email@exemple.com"
-              required
-            />
-          </div>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 5, fontWeight: 500 }}>
-              Rôle
-            </label>
-            <select
-              className="input-field"
-              value={formRole}
-              onChange={(e) => setFormRole(e.target.value as Role)}
-            >
-              {ROLES.map((r) => (
-                <option key={r} value={r}>{r}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-txt2)', marginBottom: 5, fontWeight: 500 }}>
-              Bio
-            </label>
-            <textarea
-              className="input-field"
-              value={formBio}
-              onChange={(e) => setFormBio(e.target.value)}
-              rows={3}
-              placeholder="Quelques mots..."
-              style={{ resize: 'none' }}
-            />
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, paddingTop: 4 }}>
-            <button
-              type="button"
-              onClick={() => { setModalOpen(false); resetForm(); }}
-              style={{
-                padding: '8px 16px',
-                background: 'none',
-                border: 'none',
-                color: 'var(--color-txt3)',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-                fontFamily: 'var(--font-body)',
-              }}
-            >
-              Annuler
-            </button>
-            <button type="submit" className="btn-gold">
-              Ajouter
-            </button>
-          </div>
-        </form>
-      </Modal>
     </div>
   );
 }
