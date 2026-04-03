@@ -44,7 +44,7 @@ const emptyForm: TrackFormData = {
 
 export default function TracklistPage() {
   const { state, dispatch } = useStore();
-  const { tracks, users, vocals, currentUser } = state;
+  const { tracks, users, vocals, files, currentUser } = state;
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTrackId, setEditingTrackId] = useState<string | null>(null);
@@ -59,6 +59,12 @@ export default function TracklistPage() {
   const sortedTracks = useMemo(
     () => [...tracks].sort((a, b) => a.position - b.position),
     [tracks],
+  );
+
+  // Audio files = available prods/beats
+  const audioFiles = useMemo(
+    () => files.filter((f) => f.category === 'audio'),
+    [files],
   );
 
   // Helpers
@@ -222,6 +228,7 @@ export default function TracklistPage() {
               <th className="py-3 px-2 w-10"></th>
               <th className="py-3 px-2 w-10">#</th>
               <th className="py-3 px-2">Titre / Artistes</th>
+              <th className="py-3 px-2">Prod</th>
               <th className="py-3 px-2">Statut</th>
               <th className="py-3 px-2">Durée</th>
               <th className="py-3 px-2 text-right">Actions</th>
@@ -251,6 +258,9 @@ export default function TracklistPage() {
                         {resolveArtistNames(track.artistIds)}
                         {track.extraArtists ? ` ${track.extraArtists}` : ''}
                       </div>
+                    </td>
+                    <td className="py-3 px-2 text-txt2 text-sm truncate max-w-[150px]" title={track.prod || undefined}>
+                      {track.prod || '—'}
                     </td>
                     <td className="py-3 px-2">
                       <span className={`${statusPillClass(track.status)} text-xs px-2 py-0.5 rounded-full`}>
@@ -394,9 +404,11 @@ export default function TracklistPage() {
                     {resolveArtistNames(track.artistIds)}
                     {track.extraArtists ? ` ${track.extraArtists}` : ''}
                   </div>
-                  {track.duration && (
-                    <div className="text-xs text-txt3 mt-0.5">{track.duration}</div>
-                  )}
+                  <div className="text-xs text-txt3 mt-0.5">
+                    {track.prod && <>Prod: {track.prod}</>}
+                    {track.prod && track.duration && <> &middot; </>}
+                    {track.duration && <>{track.duration}</>}
+                  </div>
 
                   {/* Actions row */}
                   <div className="flex items-center gap-1 mt-2">
@@ -571,6 +583,29 @@ export default function TracklistPage() {
                 setForm((f) => ({ ...f, extraArtists: e.target.value }))
               }
             />
+          </div>
+
+          {/* Prod / Beat selector */}
+          <div>
+            <label className="block text-xs text-txt2 mb-1">Prod / Instru</label>
+            {audioFiles.length > 0 ? (
+              <select
+                className="input-field w-full"
+                value={form.prod}
+                onChange={(e) => setForm((f) => ({ ...f, prod: e.target.value }))}
+              >
+                <option value="">— Aucune prod sélectionnée —</option>
+                {audioFiles.map((f) => (
+                  <option key={f.id} value={f.name}>
+                    {f.name}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <p className="text-xs text-txt3 italic py-2">
+                Aucun fichier audio uploadé. Va dans Fichiers pour ajouter des prods.
+              </p>
+            )}
           </div>
 
           {/* Status + Duration row */}
