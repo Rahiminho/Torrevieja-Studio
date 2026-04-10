@@ -101,3 +101,39 @@ export interface ProjectSettings {
   targetDate: string;
   coverUrl: string;
 }
+
+// ---- Video Planner ----
+
+export type VideoStage =
+  | 'idée'
+  | 'script'
+  | 'à tourner'
+  | 'brut'
+  | 'montage'
+  | 'post-prod'
+  | 'prêt'
+  | 'publié';
+
+export type VideoPriority = 'haute' | 'normale' | 'basse';
+
+export interface VideoIdea {
+  id: string;
+  title: string;
+  description: string;
+  stage: VideoStage;
+  priority: VideoPriority;
+  tags: string[];
+  notes: string;
+  estimatedDuration: string;
+  filmDate: string | null;
+  publishDate: string | null;
+  actualPublishDate: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PlannerSettings {
+  channelName: string;
+  targetPerMonth: number;
+  subscriberCount: number;
+}
